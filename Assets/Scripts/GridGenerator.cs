@@ -46,7 +46,8 @@ public class GridGenerator : MonoBehaviour
         switch (_stage.blocks[i * _stage.size.y + j].objectAbove)
         {
             case AboveObjectType.Box:
-                CreateObject(ObjectType.Box, ground.transform, 1);
+                var obj = CreateObject(ObjectType.Box, ground.transform, 1);
+                obj.GetComponent<Box>().node = ground.GetComponent<Node>();
                 ground.GetComponent<Node>().SetState(State.Inaccessible);
                 break;
             case AboveObjectType.Wall:
@@ -60,10 +61,11 @@ public class GridGenerator : MonoBehaviour
         }
     }
 
-    private static void CreateObject(ObjectType type, Transform place, float offsetY)
+    private static GameObject CreateObject(ObjectType type, Transform place, float offsetY)
     {
         var obj = ObjectPoolManager.Instance.GetObject(type);
         obj.transform.position = new Vector3(place.position.x, place.position.y + offsetY, place.position.z);
+        return obj;
     }
 
     private void SetupNeighbours()

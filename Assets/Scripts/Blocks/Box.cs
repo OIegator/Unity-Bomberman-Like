@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Box : MonoBehaviour, IPooledObject
 {
     public ObjectType ObjectType => ObjectType.Box;
+    public Node node;
 
     public void DestroyObject(GameObject obj)
     {

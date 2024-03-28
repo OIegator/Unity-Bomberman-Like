@@ -1,9 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bomb : MonoBehaviour
+public class Bomb : MonoBehaviour, IPooledObject
 {
+    public virtual ObjectType ObjectType => ObjectType.Bomb;
     public GameObject boom;
     public float delay;
     private float _counter;
@@ -40,7 +40,6 @@ public class Bomb : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (_counter > 0)
@@ -88,8 +87,7 @@ public class Bomb : MonoBehaviour
                 if (i == toBlowD.Count - 1) Instantiate(boom, toBlowD[i], transform.rotation);
                 else Instantiate(boom, toBlowD[i], transform.rotation);
             }
-        // CameraShake.Instance.ShakeCamera(5f, .1f);
-        Destroy(gameObject);
+        ObjectPoolManager.Instance.DestroyObject(gameObject);
     }
 
     void EvaluateBoomRanges()

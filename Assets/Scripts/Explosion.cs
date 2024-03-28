@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Explosion : MonoBehaviour
@@ -23,7 +20,8 @@ public class Explosion : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Brick"))
         {
-            Destroy(other.gameObject);
+            other.gameObject.GetComponent<Box>().node.SetState(State.Accessible);
+            ObjectPoolManager.Instance.DestroyObject(other.gameObject);
         }
 
         if (other.gameObject.CompareTag("Player"))

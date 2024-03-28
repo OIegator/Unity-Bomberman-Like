@@ -154,8 +154,9 @@ public class Bomberman : MonoBehaviour
             }
 
             bombPosition += Vector3.up * 0.3f;
-
-            Instantiate(bomb, bombPosition, Quaternion.identity);
+            
+            var obj = ObjectPoolManager.Instance.GetObject(ObjectType.Bomb);
+            obj.transform.position = bombPosition;
         }
         else
         {
