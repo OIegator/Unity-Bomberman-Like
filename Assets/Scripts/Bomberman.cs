@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Bomberman : MonoBehaviour
@@ -8,11 +9,19 @@ public class Bomberman : MonoBehaviour
     public ParticleSystem splash;
     private bool _isMoving;
     private Vector3 _origPos, _targetPos;
-    public float timeToMove = 0.4f;
+    public float timeToMove = 0.45f;
     public float timeToRotate = 0.2f;
-    public float jumpHeight = 0.5f;
+    public float jumpHeight = 0.2f;
     public LayerMask wallLayer;
+    public Node currentNode;
 
+    private readonly Dictionary<Vector3, int> _directionToIndex = new()
+    {
+        { Vector3.forward, 0 },
+        { Vector3.left, 3 },
+        { Vector3.back, 1 },
+        { Vector3.right, 2 }
+    };
     private void Start()
     {
         splash.Pause();
@@ -53,7 +62,20 @@ public class Bomberman : MonoBehaviour
         float elapsedTime = 0;
 
         _origPos = transform.position;
-        _targetPos = IsWallCollision(direction) ? _origPos : _origPos + direction;
+
+        if (IsWallCollision(direction))
+        {
+            _targetPos = _origPos;
+        }
+        else
+        {
+            _targetPos = _origPos + direction;
+            if (_directionToIndex.TryGetValue(direction, out int index))
+            {
+                currentNode = currentNode.GetNeighbors()[index];
+            }
+        }
+
         float startSize = transform.localScale.x;
         float targetSize = startSize * 0.9f;
         Vector3 startPos = transform.position;

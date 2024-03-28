@@ -5,7 +5,7 @@ using UnityEngine;
 public class Node : MonoBehaviour
 {
     [SerializeField] private State state;
-    [SerializeField] private List<Node> neighbors = new List<Node>();
+    [SerializeField] private List<Node> neighbors = new();
     public Node Parent { get; set; }
 
     public State GetState()

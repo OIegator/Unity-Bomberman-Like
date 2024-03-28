@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,10 +11,9 @@ public class Pathfinder : MonoBehaviour
         _openList = new List<Node> { startNode };
         _closedList = new List<Node>();
         path = new List<Node>();
+        
 
-        int iterations = 0;
-
-        while (_openList.Count > 0 && iterations < 5)
+        while (_openList.Count > 0)
         {
             Node currentNode = _openList[0];
             
@@ -54,8 +52,7 @@ public class Pathfinder : MonoBehaviour
                         _openList.Add(neighbor);
                 }
             }
-
-            iterations++;
+            
         }
     }
 

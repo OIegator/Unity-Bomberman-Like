@@ -4,37 +4,33 @@ using UnityEngine;
 
 public class EnemyFactory : MonoBehaviour
 {
-    private Bomberman player;
+    private Bomberman _player;
     [SerializeField] private float spawnInterval = 1f;
-    [SerializeField] private List<Transform> spawnPoints = new List<Transform>();
+    [SerializeField] private List<GameObject> spawnPoints = new();
 
     private Coroutine spawnCoroutine;
+    private int spawnedEnemyCount = 0;
 
     public void Setup(Bomberman player)
     {
-        this.player = player;
+        this._player = player;
     }
 
-    public void AddSpawnPoint(Transform spawnPoint)
+    public void AddSpawnPoint(GameObject spawnPoint)
     {
         spawnPoints.Add(spawnPoint);
     }
-    
+
     public void StartFactory()
     {
-        if (spawnCoroutine == null)
-        {
-            spawnCoroutine = StartCoroutine(SpawnEnemies());
-        }
+        spawnCoroutine ??= StartCoroutine(SpawnEnemies());
     }
 
-    public void StopFactory() 
+    public void StopFactory()
     {
-        if (spawnCoroutine != null)
-        {
-            StopCoroutine(spawnCoroutine);
-            spawnCoroutine = null;
-        }
+        if (spawnCoroutine == null) return;
+        StopCoroutine(spawnCoroutine);
+        spawnCoroutine = null;
     }
 
     private IEnumerator SpawnEnemies()
@@ -43,14 +39,15 @@ public class EnemyFactory : MonoBehaviour
         {
             yield return new WaitForSeconds(spawnInterval);
 
-            if (spawnPoints.Count > 0)
+            if (spawnPoints.Count > 0 && spawnedEnemyCount < 1)
             {
                 int randomIndex = Random.Range(0, spawnPoints.Count);
-                Transform spawnPoint = spawnPoints[randomIndex];
+                GameObject spawnPoint = spawnPoints[randomIndex];
 
                 GameObject enemyObject = ObjectPoolManager.Instance.GetObject(ObjectType.Enemy);
-                enemyObject.transform.position = spawnPoint.position + Vector3.up * 0.3f;
-                enemyObject.GetComponent<Enemy>().Setup(player);
+                enemyObject.transform.position = spawnPoint.transform.position + Vector3.up * 0.8f;
+                enemyObject.GetComponent<Enemy>().Setup(_player, spawnPoint);
+                spawnedEnemyCount++;
             }
         }
     }

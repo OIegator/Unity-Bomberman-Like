@@ -53,7 +53,8 @@ public class StageManager : MonoBehaviour
     {
         var spawnPoint = gridGenerator.GetPlayerSpawnPoint();
         player.transform.position = new Vector3(spawnPoint.transform.position.x,
-            spawnPoint.transform.position.y + 0.5f, spawnPoint.transform.position.z);
+            spawnPoint.transform.position.y + 0.55f, spawnPoint.transform.position.z);
+        player.currentNode = spawnPoint.GetComponent<Node>();
         player.gameObject.SetActive(true);
     }
 }
