@@ -120,16 +120,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectType: 4
-  dieTime: 3
+  dieTime: 0
   timeToMove: 0.45
   timeToRotate: 0.2
   jumpHeight: 0.2
   wallLayer:
     serializedVersion: 2
     m_Bits: 1408
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 1
+  currentNode: {fileID: 0}
 --- !u!114 &7439900334179060213
 MonoBehaviour:
   m_ObjectHideFlags: 0

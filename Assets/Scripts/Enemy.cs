@@ -1,15 +1,12 @@
-using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 
 public class Enemy : MonoBehaviour, IPooledObject
 {
     public ObjectType ObjectType => objectType;
     [SerializeField] private ObjectType objectType;
-    [SerializeField] private float dieTime = 3f;
+    [SerializeField] private float dieTime = 0f;
     private bool _isMoving;
     private Vector3 _origPos, _targetPos;
     public float timeToMove = 0.45f;
@@ -20,6 +17,7 @@ public class Enemy : MonoBehaviour, IPooledObject
 
     private bool _isDead = false;
     private Bomberman _player;
+    private bool _findPlayer;
 
     private readonly Dictionary<Vector3, int> _directionToIndex = new()
     {
@@ -30,47 +28,57 @@ public class Enemy : MonoBehaviour, IPooledObject
     };
 
     private List<Node> _currentPath;
-    private int _currentPathIndex = 0;
-
+    private List<Node> _possiblePath;
+    private int _currentNodeIndex;
     private Pathfinder _pathfinder;
 
     private void Start()
     {
         _pathfinder = GetComponent<Pathfinder>();
         _player = FindObjectOfType<Bomberman>();
+        _currentNodeIndex = 0;
+        _pathfinder.FindPath(currentNode, _player.currentNode, out _currentPath);
+    }
+
+
+    void OnDrawGizmos()
+    {
+        if (_currentPath != null)
+            foreach (var item in _currentPath)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(
+                    new Vector3(item.transform.position.x, item.transform.position.y + 0.8f, item.transform.position.z),
+                    0.2f);
+            }
     }
 
     private void Update()
     {
-        _pathfinder.FindPath(currentNode, _player.currentNode, out _currentPath);
-    }
-
-    void OnDrawGizmos()
-    {
-        if(_currentPath !=null)
-            foreach (var item in _currentPath)
-            {
-                Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(new Vector3(item.transform.position.x, item.transform.position.y + 0.8f, item.transform.position.z), 0.2f);
-            }
-    }
-
-    private void FollowPath(List<Node> path)
-    {
-        _currentPath = path;
-        _currentPathIndex = 0;
-        StartCoroutine(MoveAlongPath());
-    }
-
-    private IEnumerator MoveAlongPath()
-    {
-        foreach (var direction in
-                 _currentPath.Select(node => (node.transform.position - transform.position).normalized))
+        if(!_findPlayer) LookingForPlayer();
+        if (currentNode != _player.currentNode && !_isMoving)
         {
-            yield return StartCoroutine(MoveTo(direction));
-            _currentPathIndex++;
+            StartCoroutine(MakeStep());
+            _pathfinder.FindPath(currentNode, _player.currentNode, out _possiblePath);
+            if (_possiblePath.Count != 0)
+            {
+                _currentPath = _possiblePath;
+                _currentNodeIndex = 0;
+            }
         }
     }
+
+    private IEnumerator MakeStep()
+    {
+        if (_currentPath != null && _currentPath.Count > 0 && _currentNodeIndex != _currentPath.Count)
+        {
+            var node = _currentPath[_currentNodeIndex];
+            _currentNodeIndex++;
+            var direction = (node.transform.position - currentNode.transform.position).normalized;
+            yield return StartCoroutine(MoveTo(direction));
+        }
+    }
+
 
     private IEnumerator MoveTo(Vector3 direction)
     {
@@ -122,7 +130,6 @@ public class Enemy : MonoBehaviour, IPooledObject
         }
 
         transform.position = _targetPos;
-
         _isMoving = false;
     }
 
@@ -158,6 +165,16 @@ public class Enemy : MonoBehaviour, IPooledObject
     {
         ObjectPoolManager.Instance.DestroyObject(gameObject);
     }
+    
+    private void LookingForPlayer()
+    {
+        if (Vector3.Distance(transform.position, _player.transform.position) <= 1 && !_findPlayer)
+        {
+            _findPlayer = true;
+            _player.Die();
+            Die();
+        }
+    }
 
     private void Die()
     {
@@ -171,6 +188,8 @@ public class Enemy : MonoBehaviour, IPooledObject
     private IEnumerator DieCoroutine()
     {
         yield return new WaitForSeconds(dieTime);
+        var obj = ObjectPoolManager.Instance.GetObject(ObjectType.Explosion);
+        obj.transform.position = transform.position;
         DestroyObject();
     }
 }

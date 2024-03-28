@@ -157,6 +157,8 @@ public class Bomberman : MonoBehaviour
             
             var obj = ObjectPoolManager.Instance.GetObject(ObjectType.Bomb);
             obj.transform.position = bombPosition;
+            obj.GetComponent<Bomb>().node = currentNode;
+            currentNode.SetState(State.Inaccessible);
         }
         else
         {

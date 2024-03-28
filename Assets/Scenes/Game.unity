@@ -978,6 +978,9 @@ MonoBehaviour:
   - objectType: 5
     prefab: {fileID: 4464557898368812346, guid: d98c9d3f52a7b7948b0fd2dc23e0b3f5, type: 3}
     initialCount: 1
+  - objectType: 6
+    prefab: {fileID: 1124702114900106864, guid: 5f089128a0e8ef94195900d2d6b66c7b, type: 3}
+    initialCount: 1
 --- !u!1001 &3266811125066481891
 PrefabInstance:
   m_ObjectHideFlags: 0

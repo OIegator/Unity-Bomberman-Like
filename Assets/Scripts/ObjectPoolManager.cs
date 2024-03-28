@@ -95,6 +95,7 @@ public enum ObjectType
     Box,
     Enemy,
     EnemySpawner,
+    Explosion,
     Exit
 }
 

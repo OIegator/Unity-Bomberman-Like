@@ -6,6 +6,7 @@ public class Bomb : MonoBehaviour, IPooledObject
     public virtual ObjectType ObjectType => ObjectType.Bomb;
     public GameObject boom;
     public float delay;
+    public Node node;
     private float _counter;
     private bool _evaluated;
     private bool _canTick;
@@ -18,9 +19,8 @@ public class Bomb : MonoBehaviour, IPooledObject
     public List<Vector3> toBlowL;
     public List<Vector3> toBlowU;
     public List<Vector3> toBlowD;
-
-
-    // Start is called before the first frame update
+    
+    
     void Start()
     {
         _canTick = true;
@@ -87,6 +87,7 @@ public class Bomb : MonoBehaviour, IPooledObject
                 if (i == toBlowD.Count - 1) Instantiate(boom, toBlowD[i], transform.rotation);
                 else Instantiate(boom, toBlowD[i], transform.rotation);
             }
+        node.SetState(State.Accessible);
         ObjectPoolManager.Instance.DestroyObject(gameObject);
     }
 
