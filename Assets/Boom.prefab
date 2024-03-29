@@ -69,6 +69,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delay: 1.1
+  _particleSystem: {fileID: 6092618001035684367}
 --- !u!54 &-8270647773835726508
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -156,6 +157,10 @@ PrefabInstance:
       propertyPath: looping
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7584012933816524838, guid: 76dc8e0f41d40924baa358e448a39b05, type: 3}
+      propertyPath: lengthInSec
+      value: 1.1
+      objectReference: {fileID: 0}
     - target: {fileID: 9058714701103169809, guid: 76dc8e0f41d40924baa358e448a39b05, type: 3}
       propertyPath: looping
       value: 0
@@ -168,5 +173,10 @@ PrefabInstance:
 --- !u!4 &749779710757418160 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4023193253683035801, guid: 76dc8e0f41d40924baa358e448a39b05, type: 3}
+  m_PrefabInstance: {fileID: 4445756925195045417}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &6092618001035684367 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7584012933816524838, guid: 76dc8e0f41d40924baa358e448a39b05, type: 3}
   m_PrefabInstance: {fileID: 4445756925195045417}
   m_PrefabAsset: {fileID: 0}

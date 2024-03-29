@@ -9,7 +9,7 @@ public class ObjectPoolManager : MonoBehaviour
     [SerializeField] private List<ObjectTypeData> objectTypes;
 
     private Dictionary<ObjectType, ObjectPool> _pool;
-    private readonly List<GameObject> _activeObjects = new List<GameObject>();
+    private readonly List<GameObject> _activeObjects = new();
 
     private void Awake()
     {

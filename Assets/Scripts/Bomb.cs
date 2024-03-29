@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class Bomb : MonoBehaviour, IPooledObject
 {
-    public virtual ObjectType ObjectType => ObjectType.Bomb;
-    public GameObject boom;
+    public ObjectType ObjectType => ObjectType.Bomb;
     public float delay;
     public Node node;
     private float _counter;
@@ -19,9 +18,9 @@ public class Bomb : MonoBehaviour, IPooledObject
     public List<Vector3> toBlowL;
     public List<Vector3> toBlowU;
     public List<Vector3> toBlowD;
-    
-    
-    void Start()
+
+
+    void OnEnable()
     {
         _canTick = true;
         _evaluated = false;
@@ -31,7 +30,7 @@ public class Bomb : MonoBehaviour, IPooledObject
         toBlowU = new List<Vector3>();
         toBlowD = new List<Vector3>();
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Boom"))
@@ -53,45 +52,49 @@ public class Bomb : MonoBehaviour, IPooledObject
         }
     }
 
-    void Blow()
+    private static void CreateExplosion(Vector3 position, Quaternion rotation)
+    {
+        GameObject obj = ObjectPoolManager.Instance.GetObject(ObjectType.Explosion);
+        obj.transform.position = position;
+        obj.transform.rotation = rotation;
+    }
+
+    private void Blow()
     {
         EvaluateBoomRanges();
-        Instantiate(boom, transform.position, transform.rotation);
+        CreateExplosion(transform.position, transform.rotation);
+
         if (toBlowL.Count > 0)
-            for (int i = 0; i < toBlowL.Count; i++)
+            foreach (var position in toBlowL)
             {
-                if (i == toBlowL.Count - 1) Instantiate(boom, toBlowL[i], transform.rotation);
-                else Instantiate(boom, toBlowL[i], transform.rotation);
+                CreateExplosion(position, transform.rotation);
             }
 
-        //R
         if (toBlowR.Count > 0)
-            for (int i = 0; i < toBlowR.Count; i++)
+            foreach (var position in toBlowR)
             {
-                if (i == toBlowR.Count - 1) Instantiate(boom, toBlowR[i], transform.rotation);
-                else Instantiate(boom, toBlowR[i], transform.rotation);
+                CreateExplosion(position, transform.rotation);
             }
 
-        //U
+
         if (toBlowU.Count > 0)
-            for (int i = 0; i < toBlowU.Count; i++)
+            foreach (var position in toBlowU)
             {
-                if (i == toBlowU.Count - 1) Instantiate(boom, toBlowU[i], transform.rotation);
-                else Instantiate(boom, toBlowU[i], transform.rotation);
+                CreateExplosion(position, transform.rotation);
             }
 
-        //D
+
         if (toBlowD.Count > 0)
-            for (int i = 0; i < toBlowD.Count; i++)
+            foreach (var position in toBlowD)
             {
-                if (i == toBlowD.Count - 1) Instantiate(boom, toBlowD[i], transform.rotation);
-                else Instantiate(boom, toBlowD[i], transform.rotation);
+                CreateExplosion(position, transform.rotation);
             }
+
         node.SetState(State.Accessible);
         ObjectPoolManager.Instance.DestroyObject(gameObject);
     }
 
-    void EvaluateBoomRanges()
+    private void EvaluateBoomRanges()
     {
         if (_evaluated) return;
         // L
@@ -102,7 +105,7 @@ public class Bomb : MonoBehaviour, IPooledObject
                 break;
             }
 
-            if (Physics.Raycast(transform.position, Vector3.left, i,blowableLayer))
+            if (Physics.Raycast(transform.position, Vector3.left, i, blowableLayer))
             {
                 toBlowL.Add(new Vector3(transform.position.x - i, transform.position.y, transform.position.z));
                 break;
@@ -118,16 +121,16 @@ public class Bomb : MonoBehaviour, IPooledObject
             {
                 break;
             }
-        
-            if (Physics.Raycast(transform.position, Vector3.right, i,blowableLayer))
+
+            if (Physics.Raycast(transform.position, Vector3.right, i, blowableLayer))
             {
                 toBlowR.Add(new Vector3(transform.position.x + i, transform.position.y, transform.position.z));
                 break;
             }
-        
+
             toBlowR.Add(new Vector3(transform.position.x + i, transform.position.y, transform.position.z));
         }
-        
+
         // U
         for (float i = 1; i <= boomRange; i++)
         {
@@ -135,16 +138,16 @@ public class Bomb : MonoBehaviour, IPooledObject
             {
                 break;
             }
-            
-            if (Physics.Raycast(transform.position, Vector3.forward, i,blowableLayer))
+
+            if (Physics.Raycast(transform.position, Vector3.forward, i, blowableLayer))
             {
                 toBlowU.Add(new Vector3(transform.position.x, transform.position.y, transform.position.z + i));
                 break;
             }
-            
+
             toBlowU.Add(new Vector3(transform.position.x, transform.position.y, transform.position.z + i));
         }
-        
+
         // D
         for (float i = 1; i <= boomRange; i++)
         {
@@ -152,17 +155,16 @@ public class Bomb : MonoBehaviour, IPooledObject
             {
                 break;
             }
-            
-            if (Physics.Raycast(transform.position, Vector3.back, i,blowableLayer))
+
+            if (Physics.Raycast(transform.position, Vector3.back, i, blowableLayer))
             {
                 toBlowD.Add(new Vector3(transform.position.x, transform.position.y, transform.position.z - i));
                 break;
             }
-            
+
             toBlowD.Add(new Vector3(transform.position.x, transform.position.y, transform.position.z - i));
         }
 
         _evaluated = true;
     }
-    
 }

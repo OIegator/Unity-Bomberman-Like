@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour, IPooledObject
     public LayerMask wallLayer;
     public Node currentNode;
 
-    private bool _isDead = false;
+    private bool _isDead;
     private Bomberman _player;
     private bool _findPlayer;
 
@@ -37,7 +37,6 @@ public class Enemy : MonoBehaviour, IPooledObject
         _pathfinder = GetComponent<Pathfinder>();
         _player = FindObjectOfType<Bomberman>();
         _currentNodeIndex = 0;
-        _pathfinder.FindPath(currentNode, _player.currentNode, out _currentPath);
     }
 
 
@@ -55,7 +54,8 @@ public class Enemy : MonoBehaviour, IPooledObject
 
     private void Update()
     {
-        if(!_findPlayer) LookingForPlayer();
+        if (_player == null) return;
+        if (!_findPlayer) LookingForPlayer();
         if (currentNode != _player.currentNode && !_isMoving)
         {
             StartCoroutine(MakeStep());
@@ -161,14 +161,9 @@ public class Enemy : MonoBehaviour, IPooledObject
         _isDead = false;
     }
 
-    private void DestroyObject()
-    {
-        ObjectPoolManager.Instance.DestroyObject(gameObject);
-    }
-    
     private void LookingForPlayer()
     {
-        if (Vector3.Distance(transform.position, _player.transform.position) <= 1 && !_findPlayer)
+        if (Vector3.Distance(transform.position, _player.transform.position) <= 0.5f)
         {
             _findPlayer = true;
             _player.Die();
@@ -190,6 +185,6 @@ public class Enemy : MonoBehaviour, IPooledObject
         yield return new WaitForSeconds(dieTime);
         var obj = ObjectPoolManager.Instance.GetObject(ObjectType.Explosion);
         obj.transform.position = transform.position;
-        DestroyObject();
+        ObjectPoolManager.Instance.DestroyObject(gameObject);
     }
 }
