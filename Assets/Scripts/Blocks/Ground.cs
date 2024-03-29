@@ -23,5 +23,6 @@ public enum AboveObjectType
     Box,
     Wall,
     EnemySpawner,
+    InvisibleWall,
     Exit,
 }

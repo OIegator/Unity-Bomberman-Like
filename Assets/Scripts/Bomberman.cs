@@ -32,6 +32,13 @@ public class Bomberman : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public IEnumerator StartGame()
+    {
+        StartCoroutine(MovePlayer(Vector3.right));
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(MovePlayer(Vector3.right));
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))

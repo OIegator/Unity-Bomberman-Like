@@ -94,6 +94,7 @@ public enum ObjectType
     Wall,
     Box,
     Enemy,
+    InvisibleWall,
     EnemySpawner,
     Explosion,
     Exit

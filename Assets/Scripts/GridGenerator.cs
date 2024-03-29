@@ -54,6 +54,10 @@ public class GridGenerator : MonoBehaviour
                 CreateObject(ObjectType.Wall, ground.transform, 1f);
                 ground.GetComponent<Node>().SetState(State.Inaccessible);
                 break;
+            case AboveObjectType.InvisibleWall:
+                CreateObject(ObjectType.InvisibleWall, ground.transform, 1f);
+                ground.GetComponent<Node>().SetState(State.Inaccessible);
+                break;
             case AboveObjectType.EnemySpawner:
                 CreateObject(ObjectType.EnemySpawner, ground.transform, 1f);
                 _enemyFactory.AddSpawnPoint(ground.gameObject);
