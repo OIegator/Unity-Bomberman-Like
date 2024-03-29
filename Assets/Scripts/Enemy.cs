@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour, IPooledObject
     public float jumpHeight = 0.2f;
     public LayerMask wallLayer;
     public Node currentNode;
+    private EnemyFactory _enemyFactory;
 
     private bool _isDead;
     private Bomberman _player;
@@ -32,11 +33,13 @@ public class Enemy : MonoBehaviour, IPooledObject
     private int _currentNodeIndex;
     private Pathfinder _pathfinder;
 
-    private void Start()
+    private void OnEnable()
     {
+        _isDead = false;
         _pathfinder = GetComponent<Pathfinder>();
         _player = FindObjectOfType<Bomberman>();
         _currentNodeIndex = 0;
+        _enemyFactory = FindObjectOfType<EnemyFactory>();
     }
 
 
@@ -171,11 +174,13 @@ public class Enemy : MonoBehaviour, IPooledObject
         }
     }
 
-    private void Die()
+    public void Die()
     {
         if (_isDead) return;
         _isDead = true;
 
+        _enemyFactory.DecreaseEnemyCount();
+        
         StopAllCoroutines();
         StartCoroutine(DieCoroutine());
     }

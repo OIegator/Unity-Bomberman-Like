@@ -46,6 +46,14 @@ public class Explosion : MonoBehaviour, IPooledObject
                 other.GetComponent<Bomberman>().Die();
             }
         }
+        
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            if (delay - _counter < 0.2f)
+            {
+                other.GetComponent<Enemy>().Die();
+            }
+        }
     }
     
     private void OnDisable()

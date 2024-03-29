@@ -7,7 +7,7 @@ public class EnemyFactory : MonoBehaviour
     private Bomberman _player;
     [SerializeField] private float spawnInterval = 1f;
     [SerializeField] private List<GameObject> spawnPoints = new();
-
+    [SerializeField] private int maxEnemyCount = 2;
     private Coroutine spawnCoroutine;
     private int spawnedEnemyCount = 0;
 
@@ -33,13 +33,17 @@ public class EnemyFactory : MonoBehaviour
         spawnCoroutine = null;
     }
 
+    public void DecreaseEnemyCount()
+    {
+        spawnedEnemyCount--;
+    }
     private IEnumerator SpawnEnemies()
     {
         while (true)
         {
             yield return new WaitForSeconds(spawnInterval);
 
-            if (spawnPoints.Count > 0 && spawnedEnemyCount < 1)
+            if (spawnPoints.Count > 0 && spawnedEnemyCount < maxEnemyCount)
             {
                 int randomIndex = Random.Range(0, spawnPoints.Count);
                 GameObject spawnPoint = spawnPoints[randomIndex];

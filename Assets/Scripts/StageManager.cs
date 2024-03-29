@@ -13,7 +13,7 @@ public class StageManager : MonoBehaviour
 
     private int _currentStageId = 0;
 
-    private const float ClearDelay = 3f;
+    private const float ClearDelay = 0.01f;
 
     private void Start()
     {
