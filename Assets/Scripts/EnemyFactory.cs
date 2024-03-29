@@ -8,8 +8,8 @@ public class EnemyFactory : MonoBehaviour
     [SerializeField] private float spawnInterval = 1f;
     [SerializeField] private List<GameObject> spawnPoints = new();
     [SerializeField] private int maxEnemyCount = 2;
-    private Coroutine spawnCoroutine;
-    private int spawnedEnemyCount = 0;
+    private Coroutine _spawnCoroutine;
+    private int _spawnedEnemyCount = 0;
 
     public void Setup(Bomberman player)
     {
@@ -23,19 +23,19 @@ public class EnemyFactory : MonoBehaviour
 
     public void StartFactory()
     {
-        spawnCoroutine ??= StartCoroutine(SpawnEnemies());
+        _spawnCoroutine ??= StartCoroutine(SpawnEnemies());
     }
 
     public void StopFactory()
     {
-        if (spawnCoroutine == null) return;
-        StopCoroutine(spawnCoroutine);
-        spawnCoroutine = null;
+        if (_spawnCoroutine == null) return;
+        StopCoroutine(_spawnCoroutine);
+        _spawnCoroutine = null;
     }
 
     public void DecreaseEnemyCount()
     {
-        spawnedEnemyCount--;
+        _spawnedEnemyCount--;
     }
     private IEnumerator SpawnEnemies()
     {
@@ -43,7 +43,7 @@ public class EnemyFactory : MonoBehaviour
         {
             yield return new WaitForSeconds(spawnInterval);
 
-            if (spawnPoints.Count > 0 && spawnedEnemyCount < maxEnemyCount)
+            if (spawnPoints.Count > 0 && _spawnedEnemyCount < maxEnemyCount)
             {
                 int randomIndex = Random.Range(0, spawnPoints.Count);
                 GameObject spawnPoint = spawnPoints[randomIndex];
@@ -51,7 +51,7 @@ public class EnemyFactory : MonoBehaviour
                 GameObject enemyObject = ObjectPoolManager.Instance.GetObject(ObjectType.Enemy);
                 enemyObject.transform.position = spawnPoint.transform.position + Vector3.up * 0.8f;
                 enemyObject.GetComponent<Enemy>().Setup(_player, spawnPoint);
-                spawnedEnemyCount++;
+                _spawnedEnemyCount++;
             }
         }
     }

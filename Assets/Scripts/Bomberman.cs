@@ -133,8 +133,7 @@ public class Bomberman : MonoBehaviour
         if (bomb != null)
         {
             Vector3 bombPosition = transform.position;
-
-            // Check if the player is inside the bomb collider
+            
             Collider[] colliders = Physics.OverlapSphere(transform.position, 0.2f);
             foreach (Collider col in colliders)
             {
@@ -148,8 +147,7 @@ public class Bomberman : MonoBehaviour
             {
                 float distanceToOrigPos = Vector3.Distance(transform.position, _origPos);
                 float distanceToTargetPos = Vector3.Distance(transform.position, _targetPos);
-
-                // Choose the closer position
+                
                 bombPosition = distanceToOrigPos < distanceToTargetPos ? _origPos : _targetPos;
             }
 

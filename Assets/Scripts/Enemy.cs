@@ -42,19 +42,6 @@ public class Enemy : MonoBehaviour, IPooledObject
         _enemyFactory = FindObjectOfType<EnemyFactory>();
     }
 
-
-    void OnDrawGizmos()
-    {
-        if (_currentPath != null)
-            foreach (var item in _currentPath)
-            {
-                Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(
-                    new Vector3(item.transform.position.x, item.transform.position.y + 0.8f, item.transform.position.z),
-                    0.2f);
-            }
-    }
-
     private void Update()
     {
         if (_player == null) return;
@@ -180,7 +167,7 @@ public class Enemy : MonoBehaviour, IPooledObject
         _isDead = true;
 
         _enemyFactory.DecreaseEnemyCount();
-        
+
         StopAllCoroutines();
         StartCoroutine(DieCoroutine());
     }
