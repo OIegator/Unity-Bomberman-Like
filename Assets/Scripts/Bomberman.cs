@@ -34,9 +34,11 @@ public class Bomberman : MonoBehaviour
 
     public IEnumerator StartGame()
     {
-        StartCoroutine(MovePlayer(Vector3.right));
+        StartCoroutine(MovePlayer(Vector3.right, true));
         yield return new WaitForSeconds(0.5f);
-        StartCoroutine(MovePlayer(Vector3.right));
+        StartCoroutine(MovePlayer(Vector3.right, true));
+        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(MovePlayer(Vector3.right, true));
     }
 
     void Update()
@@ -62,7 +64,7 @@ public class Bomberman : MonoBehaviour
         return Physics.Raycast(transform.position + Vector3.up * 0.5f, direction, out var hit, 0.8f, wallLayer);
     }
 
-    private IEnumerator MovePlayer(Vector3 direction)
+    private IEnumerator MovePlayer(Vector3 direction, bool ignoreWall = false)
     {
         _isMoving = true;
         splash.Play();
@@ -70,14 +72,14 @@ public class Bomberman : MonoBehaviour
 
         _origPos = transform.position;
 
-        if (IsWallCollision(direction))
+        if (IsWallCollision(direction) && !ignoreWall)
         {
             _targetPos = _origPos;
         }
         else
         {
             _targetPos = _origPos + direction;
-            if (_directionToIndex.TryGetValue(direction, out int index))
+            if (_directionToIndex.TryGetValue(direction, out int index) && !ignoreWall)
             {
                 currentNode = currentNode.GetNeighbors()[index];
             }
