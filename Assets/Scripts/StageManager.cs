@@ -83,18 +83,6 @@ public class StageManager : MonoBehaviour
 
     private void SetupPlayer()
     {
-        var spawnPoint = gridGenerator.GetPlayerSpawnPoint();
-        player.SetActive(true);
-        player.GetComponent<Bomberman>().currentNode = spawnPoint.GetComponent<Node>();
-        if (!GameManager.Instance.menuTransition)
-        {
-            player.transform.position = new Vector3(spawnPoint.transform.position.x,
-                spawnPoint.transform.position.y + 0.5f,
-                spawnPoint.transform.position.z);
-        }
-        else
-        {
-            GameManager.Instance.menuTransition = false;
-        }
+        player.GetComponent<Bomberman>().Setup(gridGenerator.GetPlayerSpawnPoint());
     }
 }

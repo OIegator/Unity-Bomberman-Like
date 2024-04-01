@@ -13,6 +13,7 @@ public class EnemyFactory : MonoBehaviour
 
     public void Setup(GameObject player)
     {
+        spawnPoints.Clear();
         _spawnedEnemyCount = 0;
         _player = player;
     }
@@ -50,7 +51,6 @@ public class EnemyFactory : MonoBehaviour
                 GameObject spawnPoint = spawnPoints[randomIndex];
 
                 GameObject enemyObject = ObjectPoolManager.Instance.GetObject(ObjectType.Enemy);
-                enemyObject.transform.position = spawnPoint.transform.position + Vector3.up * 0.8f;
                 enemyObject.GetComponent<Enemy>().Setup(_player, spawnPoint);
                 _spawnedEnemyCount++;
             }

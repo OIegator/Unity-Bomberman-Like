@@ -13,6 +13,7 @@ public class Bomberman : MonoBehaviour
     public float jumpHeight = 0.2f;
     public LayerMask wallLayer;
     public Node currentNode;
+    [SerializeField] private float defaultScale;
 
     private readonly Dictionary<Vector3, int> _directionToIndex = new()
     {
@@ -27,6 +28,27 @@ public class Bomberman : MonoBehaviour
         splash.Pause();
     }
 
+    public void Setup(GameObject spawnPoint)
+    {
+        var spawn = spawnPoint.transform.position;
+        Vector3 position = new Vector3(spawn.x, spawn.y + 0.5f, spawn.z);
+        gameObject.SetActive(true);
+        _isMoving = false;
+        transform.localScale = new Vector3(defaultScale, defaultScale, defaultScale);
+        transform.rotation = Quaternion.Euler(0, 180, 0);
+        currentNode = spawnPoint.GetComponent<Node>();
+        if (!GameManager.Instance.menuTransition)
+        {
+            transform.position = position;
+            _origPos = position;
+            _targetPos = position;
+        }
+        else
+        {
+            GameManager.Instance.menuTransition = false;
+        }
+    }
+
     public void Die()
     {
         gameObject.SetActive(false);
@@ -35,11 +57,12 @@ public class Bomberman : MonoBehaviour
 
     public IEnumerator StartGame()
     {
-        StartCoroutine(MovePlayer(Vector3.right, true));
-        yield return new WaitForSeconds(0.5f);
-        StartCoroutine(MovePlayer(Vector3.right, true));
-        yield return new WaitForSeconds(0.5f);
-        StartCoroutine(MovePlayer(Vector3.right, true));
+        for (int i = 0; i < 3; i++)
+        {
+            StartCoroutine(MovePlayer(Vector3.right, true));
+            yield return new WaitForSeconds(0.5f);
+        }
+
         GameManager.Instance.ResumeGame();
     }
 
