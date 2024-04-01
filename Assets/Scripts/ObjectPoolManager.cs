@@ -60,7 +60,7 @@ public class ObjectPoolManager : MonoBehaviour
         obj.SetActive(false);
     }
 
-    public void ReturnAllObjects()
+    public void DestroyAllObjects()
     {
         foreach (GameObject obj in _activeObjects)
         {

@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour, IPooledObject
     public ObjectType ObjectType => objectType;
     [SerializeField] private ObjectType objectType;
     [SerializeField] private float dieTime = 0f;
+    [SerializeField] private float defaultScale = 0.5f;
     private bool _isMoving;
     private Vector3 _origPos, _targetPos;
     public float timeToMove = 0.45f;
@@ -17,7 +18,7 @@ public class Enemy : MonoBehaviour, IPooledObject
     private EnemyFactory _enemyFactory;
 
     private bool _isDead;
-    private Bomberman _player;
+    private GameObject _player;
     private bool _findPlayer;
 
     private readonly Dictionary<Vector3, int> _directionToIndex = new()
@@ -33,23 +34,15 @@ public class Enemy : MonoBehaviour, IPooledObject
     private int _currentNodeIndex;
     private Pathfinder _pathfinder;
 
-    private void OnEnable()
-    {
-        _isDead = false;
-        _pathfinder = GetComponent<Pathfinder>();
-        _player = FindObjectOfType<Bomberman>();
-        _currentNodeIndex = 0;
-        _enemyFactory = FindObjectOfType<EnemyFactory>();
-    }
-
     private void Update()
     {
-        if (_player == null) return;
+        if (GameManager.Instance.currentState != GameState.Playing) return;
+        if (_player == null || _isDead) return;
         if (!_findPlayer) LookingForPlayer();
-        if (currentNode != _player.currentNode && !_isMoving)
+        if (currentNode != _player.GetComponent<Bomberman>().currentNode && !_isMoving)
         {
             StartCoroutine(MakeStep());
-            _pathfinder.FindPath(currentNode, _player.currentNode, out _possiblePath);
+            _pathfinder.FindPath(currentNode, _player.GetComponent<Bomberman>().currentNode, out _possiblePath);
             if (_possiblePath.Count != 0)
             {
                 _currentPath = _possiblePath;
@@ -58,12 +51,23 @@ public class Enemy : MonoBehaviour, IPooledObject
         }
     }
 
+    void OnDrawGizmos()
+    {
+        if (_currentPath != null)
+            foreach (var item in _currentPath)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(
+                    new Vector3(item.transform.position.x, item.transform.position.y + 0.8f, item.transform.position.z),
+                    0.2f);
+            }
+    }
+
     private IEnumerator MakeStep()
     {
         if (_currentPath != null && _currentPath.Count > 0 && _currentNodeIndex != _currentPath.Count)
         {
             var node = _currentPath[_currentNodeIndex];
-            _currentNodeIndex++;
             var direction = (node.transform.position - currentNode.transform.position).normalized;
             yield return StartCoroutine(MoveTo(direction));
         }
@@ -82,6 +86,7 @@ public class Enemy : MonoBehaviour, IPooledObject
         }
         else
         {
+            _currentNodeIndex++;
             _targetPos = _origPos + direction;
             if (_directionToIndex.TryGetValue(direction, out int index))
             {
@@ -141,14 +146,18 @@ public class Enemy : MonoBehaviour, IPooledObject
 
     private bool IsWallCollision(Vector3 direction)
     {
-        return Physics.Raycast(transform.position + Vector3.up * 0.5f, direction, out var hit, 0.8f, wallLayer);
+        return Physics.Raycast(transform.position + Vector3.up * 0.1f, direction, out var hit, 0.8f, wallLayer);
     }
 
-    public void Setup(Bomberman player, GameObject spawnPoint)
+    public void Setup(GameObject player, GameObject spawnPoint)
     {
         currentNode = spawnPoint.GetComponent<Node>();
         _player = player;
+        transform.localScale = new Vector3(defaultScale, defaultScale, defaultScale);
         _isDead = false;
+        _pathfinder = GetComponent<Pathfinder>();
+        _currentNodeIndex = 0;
+        _enemyFactory = FindObjectOfType<EnemyFactory>();
     }
 
     private void LookingForPlayer()
@@ -156,7 +165,7 @@ public class Enemy : MonoBehaviour, IPooledObject
         if (Vector3.Distance(transform.position, _player.transform.position) <= 0.5f)
         {
             _findPlayer = true;
-            _player.Die();
+            _player.GetComponent<Bomberman>().Die();
             Die();
         }
     }
@@ -166,6 +175,8 @@ public class Enemy : MonoBehaviour, IPooledObject
         if (_isDead) return;
         _isDead = true;
 
+        _isMoving = false;
+        _currentNodeIndex = 0;
         _enemyFactory.DecreaseEnemyCount();
 
         StopAllCoroutines();

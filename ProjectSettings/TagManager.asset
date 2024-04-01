@@ -9,6 +9,7 @@ TagManager:
   - Boom
   - Brick
   - Enemy
+  - Exit
   layers:
   - Default
   - TransparentFX

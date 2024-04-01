@@ -3,6 +3,6 @@
 
 public class InvisibleWall : MonoBehaviour, IPooledObject
 {
-    public ObjectType ObjectType => ObjectType.Wall;
+    public ObjectType ObjectType => ObjectType.InvisibleWall;
     
 }

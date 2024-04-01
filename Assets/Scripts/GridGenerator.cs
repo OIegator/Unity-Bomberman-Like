@@ -62,6 +62,9 @@ public class GridGenerator : MonoBehaviour
                 CreateObject(ObjectType.EnemySpawner, ground.transform, 1f);
                 _enemyFactory.AddSpawnPoint(ground.gameObject);
                 break;
+            case AboveObjectType.Exit:
+                CreateObject(ObjectType.Exit, ground.transform, 1f);
+                break;
         }
     }
 

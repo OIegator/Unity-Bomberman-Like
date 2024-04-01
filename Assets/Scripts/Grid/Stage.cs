@@ -7,6 +7,8 @@ public class Stage : ScriptableObject
 {
     public Vector2Int size;
     public Vector2Int start;
+    public Vector3 cameraConfinerCenter;
+    public Vector3 cameraConfinerSize;
 
     public List<BlockInfo> blocks;
 }

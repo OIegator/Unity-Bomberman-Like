@@ -1,57 +1,100 @@
+using System;
 using System.Collections;
-using System.Threading;
 using UnityEngine;
 
 public class StageManager : MonoBehaviour
 {
     [Header("Systems")] [SerializeField] private ObjectPoolManager objectPoolManager;
     [SerializeField] private EnemyFactory enemyFactory;
-    [SerializeField] private Bomberman player;
+    [SerializeField] private GameObject player;
     [SerializeField] private GridGenerator gridGenerator;
+    [SerializeField] private BoxCollider boundingVolume;
 
     [Header("Stages")] [SerializeField] private Stage[] stages;
 
-    private int _currentStageId = 0;
+    private int _currentStageId = 1;
 
-    private const float ClearDelay = 0.01f;
+    private const float ClearDelay = 0.1f;
 
     private void Start()
     {
         SetupSystem();
-        StartCoroutine(StartNextLevel());
+        NextLevel();
+        SetupPlayer();
+    }
+
+    private void HandleGameStateChanged(GameState state)
+    {
+        switch (state)
+        {
+            case GameState.Playing:
+                enemyFactory.StartFactory();
+                break;
+            case GameState.Paused:
+                // Pause game logic
+                break;
+            case GameState.StageComplete:
+                _currentStageId++;
+                StartCoroutine(OnStageComplete());
+                break;
+            case GameState.GameOver:
+                enemyFactory.StopFactory();
+                break;
+            case GameState.NotStarted:
+                break;
+            case GameState.Restart:
+                StartCoroutine(OnStageComplete());
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(state), state, null);
+        }
     }
 
     private void SetupSystem()
     {
+        GameManager.Instance.OnGameStateChanged += HandleGameStateChanged;
         objectPoolManager.InitializePool();
     }
 
-    private IEnumerator StartNextLevel()
+    private IEnumerator OnStageComplete()
     {
-        enemyFactory.StopFactory();
-        yield return new WaitForSeconds(ClearDelay);
+        yield return new WaitForSeconds(0.6f);
+        StartCoroutine(DestroyStage());
         NextLevel();
-        StartCoroutine(CoroutineStartGame());
+        SetupPlayer();
+        GameManager.Instance.ResumeGame();
     }
 
-    public void NextLevel()
+    private IEnumerator DestroyStage()
     {
-        _currentStageId = 1;
+        ObjectPoolManager.Instance.DestroyAllObjects();
+        enemyFactory.StopFactory();
+        yield return new WaitForSeconds(ClearDelay);
+    }
+
+    private void NextLevel()
+    {
+        boundingVolume.center = stages[_currentStageId - 1].cameraConfinerCenter;
+        boundingVolume.size = stages[_currentStageId - 1].cameraConfinerSize;
         enemyFactory.Setup(player);
         gridGenerator.Setup(stages[_currentStageId - 1], enemyFactory);
     }
 
-    private IEnumerator CoroutineStartGame()
-    {
-        yield return new WaitForSeconds(0.01f);
-        SetupPlayer();
-        enemyFactory.StartFactory();
-    }
 
     private void SetupPlayer()
     {
         var spawnPoint = gridGenerator.GetPlayerSpawnPoint();
-        player.currentNode = spawnPoint.GetComponent<Node>();
-        player.gameObject.SetActive(true);
+        player.SetActive(true);
+        player.GetComponent<Bomberman>().currentNode = spawnPoint.GetComponent<Node>();
+        if (!GameManager.Instance.menuTransition)
+        {
+            player.transform.position = new Vector3(spawnPoint.transform.position.x,
+                spawnPoint.transform.position.y + 0.5f,
+                spawnPoint.transform.position.z);
+        }
+        else
+        {
+            GameManager.Instance.menuTransition = false;
+        }
     }
 }

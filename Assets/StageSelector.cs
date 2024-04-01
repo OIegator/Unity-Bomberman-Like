@@ -13,8 +13,8 @@ public class StageSelector : MonoBehaviour
     public Color selectedColor; // Color for selected button
     public Color defaultColor; // Default color for buttons
 
-    private List<List<Button>> stageButtons = new List<List<Button>>();
-    private Button selectedButton;
+    private readonly List<List<Button>> _stageButtons = new List<List<Button>>();
+    private Button _selectedButton;
 
     void Start()
     {
@@ -54,7 +54,7 @@ public class StageSelector : MonoBehaviour
                 pageButtonList.Add(button);
             }
 
-            stageButtons.Add(pageButtonList);
+            _stageButtons.Add(pageButtonList);
         }
     }
 
@@ -69,14 +69,11 @@ public class StageSelector : MonoBehaviour
     void SelectStage(int stageIndex)
     {
         // Change color of previously selected button back to default
-        if (selectedButton != null)
-            selectedButton.GetComponent<Image>().color = defaultColor;
+        if (_selectedButton != null)
+            _selectedButton.GetComponent<Image>().color = defaultColor;
 
         // Select the new button
-        selectedButton = stageButtons[stageIndex / stagesPerPage][stageIndex % stagesPerPage];
-        selectedButton.GetComponent<Image>().color = selectedColor;
-
-        // Implement your logic to handle stage selection
-        Debug.Log("Selected Stage: " + (stageIndex + 1));
+        _selectedButton = _stageButtons[stageIndex / stagesPerPage][stageIndex % stagesPerPage];
+        _selectedButton.GetComponent<Image>().color = selectedColor;
     }
 }

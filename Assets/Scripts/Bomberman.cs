@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,11 +16,12 @@ public class Bomberman : MonoBehaviour
 
     private readonly Dictionary<Vector3, int> _directionToIndex = new()
     {
-        { Vector3.forward, 0 },
-        { Vector3.left, 3 },
-        { Vector3.back, 1 },
-        { Vector3.right, 2 }
+        {Vector3.forward, 0},
+        {Vector3.left, 3},
+        {Vector3.back, 1},
+        {Vector3.right, 2}
     };
+
     private void Start()
     {
         splash.Pause();
@@ -29,7 +29,8 @@ public class Bomberman : MonoBehaviour
 
     public void Die()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
+        GameManager.Instance.GameOver();
     }
 
     public IEnumerator StartGame()
@@ -39,10 +40,13 @@ public class Bomberman : MonoBehaviour
         StartCoroutine(MovePlayer(Vector3.right, true));
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(MovePlayer(Vector3.right, true));
+        GameManager.Instance.ResumeGame();
     }
 
     void Update()
     {
+        if (GameManager.Instance.currentState != GameState.Playing) return;
+
         if (Input.GetKeyDown(KeyCode.Space))
             PlaceBomb();
 
@@ -142,7 +146,7 @@ public class Bomberman : MonoBehaviour
         if (bomb != null)
         {
             Vector3 bombPosition = transform.position;
-            
+
             Collider[] colliders = Physics.OverlapSphere(transform.position, 0.2f);
             foreach (Collider col in colliders)
             {
@@ -156,12 +160,12 @@ public class Bomberman : MonoBehaviour
             {
                 float distanceToOrigPos = Vector3.Distance(transform.position, _origPos);
                 float distanceToTargetPos = Vector3.Distance(transform.position, _targetPos);
-                
+
                 bombPosition = distanceToOrigPos < distanceToTargetPos ? _origPos : _targetPos;
             }
 
             bombPosition += Vector3.up * 0.3f;
-            
+
             var obj = ObjectPoolManager.Instance.GetObject(ObjectType.Bomb);
             obj.transform.position = bombPosition;
             obj.GetComponent<Bomb>().node = currentNode;

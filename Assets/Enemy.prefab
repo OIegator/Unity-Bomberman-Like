@@ -121,6 +121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectType: 4
   dieTime: 0
+  defaultScale: 0.5
   timeToMove: 0.45
   timeToRotate: 0.2
   jumpHeight: 0.2

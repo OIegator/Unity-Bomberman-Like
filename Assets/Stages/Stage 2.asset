@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: {x: 15, y: 10}
   start: {x: 1, y: 3}
+  cameraConfinerCenter: {x: 6.492679, y: 5.552164, z: 0}
+  cameraConfinerSize: {x: 13.91475, y: 9.224327, z: 8.3}
   blocks:
   - objectType: 0
     objectAbove: 4
@@ -78,7 +80,7 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 0
+    objectAbove: 5
   - objectType: 0
     objectAbove: 0
   - objectType: 0

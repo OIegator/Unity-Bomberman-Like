@@ -4,16 +4,17 @@ using UnityEngine;
 
 public class EnemyFactory : MonoBehaviour
 {
-    private Bomberman _player;
-    [SerializeField] private float spawnInterval = 1f;
+    private GameObject _player;
+    [SerializeField] private float spawnInterval = 5f;
     [SerializeField] private List<GameObject> spawnPoints = new();
     [SerializeField] private int maxEnemyCount = 2;
     private Coroutine _spawnCoroutine;
-    private int _spawnedEnemyCount = 0;
+    private int _spawnedEnemyCount;
 
-    public void Setup(Bomberman player)
+    public void Setup(GameObject player)
     {
-        this._player = player;
+        _spawnedEnemyCount = 0;
+        _player = player;
     }
 
     public void AddSpawnPoint(GameObject spawnPoint)
@@ -37,12 +38,12 @@ public class EnemyFactory : MonoBehaviour
     {
         _spawnedEnemyCount--;
     }
+
     private IEnumerator SpawnEnemies()
     {
         while (true)
         {
             yield return new WaitForSeconds(spawnInterval);
-
             if (spawnPoints.Count > 0 && _spawnedEnemyCount < maxEnemyCount)
             {
                 int randomIndex = Random.Range(0, spawnPoints.Count);
