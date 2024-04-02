@@ -118,8 +118,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2967cfd2f1211a4fb1cf575791aedbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boom: {fileID: 1124702114900106864, guid: 5f089128a0e8ef94195900d2d6b66c7b, type: 3}
   delay: 2
+  node: {fileID: 0}
   boomRange: 2
   wallLayer:
     serializedVersion: 2

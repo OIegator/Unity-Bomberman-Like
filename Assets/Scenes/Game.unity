@@ -2339,6 +2339,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 0
   menuTransition: 1
+  unlockedStage: 1
 --- !u!1001 &640768923
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2985,7 +2986,6 @@ GameObject:
   - component: {fileID: 845343489}
   - component: {fileID: 845343488}
   - component: {fileID: 845343493}
-  - component: {fileID: 845343494}
   m_Layer: 5
   m_Name: Scroll Stages
   m_TagString: Untagged
@@ -3114,25 +3114,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
---- !u!114 &845343494
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 845343486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb82e8f875c253a40b9219b0626d95e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttonPrefab: {fileID: 3007712139706017513, guid: 5d495fd2d806bb149bcda0ffbccd0cb8, type: 3}
-  pageContainerPrefab: {fileID: 3747337255567883154, guid: 77bfe9d5b3ba9184fa5e9bef5d43df44, type: 3}
-  scrollContent: {fileID: 730121638}
-  stagesPerPage: 5
-  totalStages: 10
-  selectedColor: {r: 0, g: 0, b: 0, a: 1}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &859936852 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7192595410400899870, guid: f15d3ef8ba8a9c14f93a218fd118e41d, type: 3}
@@ -6073,9 +6054,12 @@ MonoBehaviour:
   player: {fileID: 138469295}
   gridGenerator: {fileID: 754327068}
   boundingVolume: {fileID: 275523457}
-  stages:
-  - {fileID: 11400000, guid: 1d85cd77f5e00e9499f42033b35b5c29, type: 2}
-  - {fileID: 11400000, guid: 0150a301ace3dbe4ba2568cae0d482a6, type: 2}
+  stagePages:
+  - stages:
+    - {fileID: 11400000, guid: 1d85cd77f5e00e9499f42033b35b5c29, type: 2}
+    - {fileID: 11400000, guid: 0150a301ace3dbe4ba2568cae0d482a6, type: 2}
+  - stages:
+    - {fileID: 11400000, guid: 1d85cd77f5e00e9499f42033b35b5c29, type: 2}
 --- !u!1 &2048288176
 GameObject:
   m_ObjectHideFlags: 0
@@ -6195,6 +6179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f04dd325bd55644c888f8a9e4996c0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stageManager: {fileID: 1954493814}
   menuCam: {fileID: 776692233}
   gameCam: {fileID: 1078277249}
   uiPlayPanel: {fileID: 164402040}
@@ -6209,6 +6194,13 @@ MonoBehaviour:
   stagePagesRect: {fileID: 730121638}
   swipeTweenTime: 0.3
   swipeTweenType: 10
+  buttonPrefab: {fileID: 3007712139706017513, guid: 5d495fd2d806bb149bcda0ffbccd0cb8, type: 3}
+  pageContainerPrefab: {fileID: 3747337255567883154, guid: 77bfe9d5b3ba9184fa5e9bef5d43df44, type: 3}
+  scrollContent: {fileID: 730121638}
+  selectedColor: {r: 0, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedSprite: {fileID: 21300000, guid: 63469d95f97eb8941bc68a7dd5db91a7, type: 3}
+  defaultSprite: {fileID: 21300000, guid: c2bbe4635fe413e49bbc20b231053056, type: 3}
 --- !u!1001 &2069693899
 PrefabInstance:
   m_ObjectHideFlags: 0

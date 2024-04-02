@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Stage", menuName = "Stage")]
 public class Stage : ScriptableObject
 {
+    public int id = 1;
     public Vector2Int size;
     public Vector2Int start;
     public Vector3 cameraConfinerCenter;

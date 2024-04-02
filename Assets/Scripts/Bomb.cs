@@ -41,6 +41,7 @@ public class Bomb : MonoBehaviour, IPooledObject
 
     void Update()
     {
+        if (GameManager.Instance.currentState != GameState.Playing) return;
         if (_counter > 0)
         {
             if (_canTick) _counter -= Time.deltaTime;

@@ -43,10 +43,6 @@ public class Bomberman : MonoBehaviour
             _origPos = position;
             _targetPos = position;
         }
-        else
-        {
-            GameManager.Instance.menuTransition = false;
-        }
     }
 
     public void Die()
@@ -63,6 +59,7 @@ public class Bomberman : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         }
 
+        GameManager.Instance.menuTransition = false;
         GameManager.Instance.ResumeGame();
     }
 
