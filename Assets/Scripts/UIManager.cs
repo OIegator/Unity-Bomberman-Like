@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
@@ -10,10 +11,15 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
     [SerializeField] private StageManager stageManager;
+    [SerializeField] private CinemachineBrain cinemachineBrain;
     public CinemachineVirtualCameraBase menuCam;
     public CinemachineVirtualCameraBase gameCam;
-    public RectTransform uiPlayPanel;
-    public RectTransform uiStageSelector;
+    public GameObject uiPlayPanel;
+    public GameObject uiStageSelector;
+    public GameObject uiGameOverPanel;
+    public GameObject uiStageCompletePanel;
+    public bool gameOverPanelActive;
+    public bool stageCompletePanelActive;
     public CanvasGroup uiTransitionScreen;
     public Button startButton;
     public Bomberman player;
@@ -21,10 +27,9 @@ public class UIManager : MonoBehaviour
     private CinemachineVirtualCameraBase _currentActiveCamera;
     private bool _gameStarted;
 
-    [SerializeField] public GameObject nextButton;
-    [SerializeField] public GameObject restartButton;
-    
-    [Header("Stage Scroll")] [SerializeField] private int maxPage;
+    [Header("Stage Scroll")] [SerializeField]
+    private int maxPage;
+
     private int _currentPage;
     private Vector3 _targetPagePos;
     private Tween _swipeTween;
@@ -33,19 +38,17 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private float swipeTweenTime;
     [SerializeField] private Ease swipeTweenType;
-    
-    [Header("Stage Selector")] 
-    public GameObject buttonPrefab; // Prefab for the stage button
-    public GameObject pageContainerPrefab; // Prefab for the page container
-    public RectTransform scrollContent; // Content of the scroll rect
-    public Color selectedColor; // Color for selected button
-    public Color defaultColor; // Default color for buttons
+
+    [Header("Stage Selector")] public GameObject buttonPrefab;
+    public GameObject pageContainerPrefab;
+    public RectTransform scrollContent;
     public Sprite selectedSprite;
     public Sprite defaultSprite;
     private Button _selectedButtonComponent;
 
     private readonly List<List<Button>> _stageButtons = new();
     private Button _selectedButton;
+
     private void Awake()
     {
         if (Instance == null)
@@ -54,7 +57,7 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
-        
+
         _currentPage = 1;
         _targetPagePos = stagePagesRect.localPosition;
     }
@@ -70,32 +73,35 @@ public class UIManager : MonoBehaviour
                 // Pause game logic
                 break;
             case GameState.StageComplete:
-                nextButton.SetActive(false);
+                if (stageCompletePanelActive) HideStageCompleteUIElements();
                 FadeIn();
                 break;
             case GameState.GameOver:
-                restartButton.SetActive(true);
+                ShowGameOverUIElements();
                 break;
             case GameState.NotStarted:
                 break;
             case GameState.Restart:
-                restartButton.SetActive(false);
+                if (gameOverPanelActive) HideGameOverUIElements();
                 FadeIn();
+                break;
+            case GameState.BackToMenu:
+                StartCoroutine(DelayedBackToMenu());
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(state), state, null);
         }
     }
 
-    private void FadeIn()
+    private void FadeIn(float pauseTime = 0.2f)
     {
-        uiTransitionScreen.DOFade(1f, 0.5f).OnComplete(PauseBeforeFadeOut);
+        uiTransitionScreen.DOFade(1f, 0.5f).OnComplete(() => PauseBeforeFadeOut(pauseTime));
     }
 
-    private void PauseBeforeFadeOut()
+    private void PauseBeforeFadeOut(float pauseTime)
     {
         DOTween.Sequence()
-            .AppendInterval(0.2f)
+            .AppendInterval(pauseTime)
             .OnComplete(FadeOut);
     }
 
@@ -104,11 +110,12 @@ public class UIManager : MonoBehaviour
         uiTransitionScreen.DOFade(0f, 0.5f);
     }
 
+
     void Start()
     {
         GameManager.Instance.OnGameStateChanged += HandleGameStateChanged;
         GenerateStageButtons();
-        SelectStage(0,0);
+        SelectStage(0, 0);
         if (menuCam != null && gameCam != null)
         {
             menuCam.Priority = 10;
@@ -123,50 +130,105 @@ public class UIManager : MonoBehaviour
 
     public void SwitchCamera()
     {
-        if (!_gameStarted)
+        if (_currentActiveCamera == menuCam)
         {
-            _gameStarted = true;
             startButton.interactable = false;
-            if (_currentActiveCamera == menuCam)
-            {
-                HidePlayUIElements();
-                HideStageSelectorUIElements();
-                StartCoroutine(player.StartGame());
-                menuCam.Priority = 0;
-                gameCam.Priority = 10;
-                _currentActiveCamera = gameCam;
-            }
-            else
-            {
-                ShowPlayUIElements();
-                ShowStageSelectorUIElements();
-                menuCam.Priority = 10;
-                gameCam.Priority = 0;
-                _currentActiveCamera = menuCam;
-            }
+            HidePlayUIElements();
+            HideStageSelectorUIElements();
+            StartCoroutine(player.StartGame());
+            cinemachineBrain.m_DefaultBlend.m_Time = 2f;
+            menuCam.Priority = 0;
+            gameCam.Priority = 10;
+            _currentActiveCamera = gameCam;
         }
+        else
+        {
+            startButton.interactable = true;
+            ShowPlayUIElements();
+            ShowStageSelectorUIElements();
+            cinemachineBrain.m_DefaultBlend.m_Time = 0.2f;
+            menuCam.Priority = 10;
+            gameCam.Priority = 0;
+            _currentActiveCamera = menuCam;
+        }
+    }
+
+    private IEnumerator DelayedBackToMenu()
+    {
+        GameManager.Instance.menuTransition = true;
+        FadeIn(0.5f);
+        if (gameOverPanelActive) HideGameOverUIElements();
+        yield return new WaitForSeconds(0.6f);
+        SwitchCamera();
+        ShowPlayUIElements();
+        ShowStageSelectorUIElements();
     }
 
     private void HidePlayUIElements()
     {
-        uiPlayPanel.DOAnchorPosX(-uiPlayPanel.rect.width, 1f).SetEase(Ease.InOutQuint);
+        RectTransform uiPlayRectTransform = uiPlayPanel.GetComponent<RectTransform>();
+
+        uiPlayRectTransform.DOAnchorPosX(-uiPlayRectTransform.rect.width, 1f)
+            .SetEase(Ease.InOutQuint)
+            .OnComplete(() => uiPlayPanel.SetActive(false));
     }
+
 
     private void HideStageSelectorUIElements()
     {
-        uiStageSelector.DOAnchorPosY(-uiPlayPanel.rect.height, 1f).SetEase(Ease.InOutQuint);
+        RectTransform uiStageSelectorRectTransform = uiStageSelector.GetComponent<RectTransform>();
+        uiStageSelectorRectTransform.DOAnchorPosY(-uiStageSelectorRectTransform.rect.height, 1f)
+            .SetEase(Ease.InOutQuint)
+            .OnComplete(() => uiStageSelector.SetActive(false));
     }
 
     private void ShowStageSelectorUIElements()
     {
-        uiStageSelector.DOAnchorPosY(uiPlayPanel.rect.height, 1f).SetEase(Ease.InOutQuint);
+        uiStageSelector.SetActive(true);
+        uiStageSelector.GetComponent<RectTransform>().DOAnchorPosY(0, 1f).SetEase(Ease.InOutQuint);
     }
 
     private void ShowPlayUIElements()
     {
-        uiPlayPanel.DOAnchorPosX(0, 1f).SetEase(Ease.InOutQuint);
+        uiPlayPanel.SetActive(true);
+        uiPlayPanel.GetComponent<RectTransform>().DOAnchorPosX(0, 1f).SetEase(Ease.InOutQuint);
+    }
+
+    private void HideGameOverUIElements()
+    {
+        gameOverPanelActive = false;
+        RectTransform uiGameOverPanelRectTransform = uiGameOverPanel.GetComponent<RectTransform>();
+        uiGameOverPanelRectTransform.DOAnchorPosY(-uiGameOverPanelRectTransform.rect.height - 30f, 1f)
+            .SetEase(Ease.InOutQuint)
+            .OnComplete(() => uiGameOverPanel.SetActive(false));
     }
     
+    private void HideStageCompleteUIElements()
+    {
+        stageCompletePanelActive = false;
+        RectTransform uiStageCompletePanelRectTransform = uiStageCompletePanel.GetComponent<RectTransform>();
+        uiStageCompletePanelRectTransform.DOAnchorPosY(-uiStageCompletePanelRectTransform.rect.height - 30f, 1f)
+            .SetEase(Ease.InOutQuint)
+            .OnComplete(() => uiGameOverPanel.SetActive(false));
+    }
+
+    private void ShowGameOverUIElements()
+    {
+        uiGameOverPanel.SetActive(true);
+        gameOverPanelActive = true;
+        uiGameOverPanel.GetComponent<RectTransform>()
+            .DOAnchorPosY(uiGameOverPanel.GetComponent<RectTransform>().rect.height + 30f, 1f)
+            .SetEase(Ease.InOutElastic);
+    }
+
+    public void ShowStageCompleteUIElements()
+    {
+        uiStageCompletePanel.SetActive(true);
+        stageCompletePanelActive = true;
+        uiStageCompletePanel.GetComponent<RectTransform>()
+            .DOAnchorPosY(uiStageCompletePanel.GetComponent<RectTransform>().rect.height + 30f, 1f)
+            .SetEase(Ease.InOutElastic);
+    }
     public void NextPage()
     {
         if (_currentPage < maxPage)
@@ -174,7 +236,11 @@ public class UIManager : MonoBehaviour
             _currentPage++;
             _targetPagePos += pageStep;
             MovePage();
-        }   
+        }
+        else
+        {
+            MovePage();
+        }
     }
 
     public void PreviousPage()
@@ -185,14 +251,18 @@ public class UIManager : MonoBehaviour
             _targetPagePos -= pageStep;
             MovePage();
         }
+        else
+        {
+            MovePage();
+        }
     }
 
-    private void MovePage()
+    public void MovePage()
     {
         _swipeTween?.Restart();
         _swipeTween = stagePagesRect.DOLocalMove(_targetPagePos, swipeTweenTime).SetEase(swipeTweenType);
     }
-    
+
     void GenerateStageButtons()
     {
         StageManager stageManager = FindObjectOfType<StageManager>(); // Find the StageManager instance
@@ -217,7 +287,7 @@ public class UIManager : MonoBehaviour
                 GameObject buttonGo = Instantiate(buttonPrefab, pageContainerRect);
                 Button button = buttonGo.GetComponent<Button>();
                 TextMeshProUGUI buttonText = buttonGo.GetComponentInChildren<TextMeshProUGUI>();
-                
+
                 // Set stage Id
                 stageManager.stagePages[page].stages[i].id = stageIndex;
 
@@ -267,7 +337,8 @@ public class UIManager : MonoBehaviour
             // Revert text bottom padding
             TextMeshProUGUI buttonText = _selectedButton.GetComponentInChildren<TextMeshProUGUI>();
             buttonText.color = Color.white;
-            buttonText.rectTransform.offsetMin = new Vector2(0f, 0f);;
+            buttonText.rectTransform.offsetMin = new Vector2(0f, 0f);
+            ;
         }
 
         // Set the new selected button
@@ -292,5 +363,4 @@ public class UIManager : MonoBehaviour
         // Load the selected stage
         stageManager.LoadStage(pageIndex, stageIndex);
     }
-
 }

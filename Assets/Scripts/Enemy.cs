@@ -68,6 +68,7 @@ public class Enemy : MonoBehaviour, IPooledObject
         if (_currentPath != null && _currentPath.Count > 0 && _currentNodeIndex != _currentPath.Count)
         {
             var node = _currentPath[_currentNodeIndex];
+            if (node.transform.position == currentNode.transform.position) yield break;
             var direction = (node.transform.position - currentNode.transform.position).normalized;
             yield return StartCoroutine(MoveTo(direction));
         }
@@ -176,7 +177,7 @@ public class Enemy : MonoBehaviour, IPooledObject
     {
         if (_isDead) return;
         _isDead = true;
-        
+
         _isMoving = false;
         _currentNodeIndex = 0;
         _enemyFactory.DecreaseEnemyCount();

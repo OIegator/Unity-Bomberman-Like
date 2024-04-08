@@ -54,6 +54,10 @@ public class StageManager : MonoBehaviour
             case GameState.Restart:
                 StartCoroutine(OnStageComplete());
                 break;
+            case GameState.BackToMenu:
+                StartCoroutine(OnStageComplete());
+                
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(state), state, null);
         }
@@ -85,7 +89,14 @@ public class StageManager : MonoBehaviour
         StartCoroutine(DestroyStage());
         NextStage();
         SetupPlayer();
-        GameManager.Instance.ResumeGame();
+        if (GameManager.Instance.currentState != GameState.BackToMenu)
+        {
+            GameManager.Instance.ResumeGame();
+        }
+        else
+        {
+            GameManager.Instance.currentState = GameState.NotStarted;
+        }
     }
 
     private System.Collections.IEnumerator DestroyStage()

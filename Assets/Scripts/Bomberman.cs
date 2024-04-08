@@ -43,6 +43,10 @@ public class Bomberman : MonoBehaviour
             _origPos = position;
             _targetPos = position;
         }
+        else
+        {
+            transform.position = new Vector3(position.x - 3, position.y, position.z);
+        }
     }
 
     public void Die()

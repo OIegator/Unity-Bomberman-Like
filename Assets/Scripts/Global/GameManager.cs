@@ -45,17 +45,23 @@ public class GameManager : MonoBehaviour
 
     public void EndStage()
     {
-        UIManager.Instance.nextButton.SetActive(true);
+        UIManager.Instance.ShowStageCompleteUIElements();
         currentState = GameState.NotStarted;
         OnGameStateChanged?.Invoke(currentState);
     }
     
     public void Restart()
     {
-        UIManager.Instance.restartButton.SetActive(true);
         currentState = GameState.Restart;
         OnGameStateChanged?.Invoke(currentState);
     }
+    
+    public void BackToMenu()
+    {
+        currentState = GameState.BackToMenu;
+        OnGameStateChanged?.Invoke(currentState);
+    }
+
     
     public void GameOver()
     {
@@ -110,7 +116,8 @@ public enum GameState
     NotStarted,
     Playing,
     Paused,
-    Restart, 
+    Restart,
+    BackToMenu,
     StageComplete,
     GameOver
 }
