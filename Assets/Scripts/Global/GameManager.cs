@@ -32,7 +32,6 @@ public class GameManager : MonoBehaviour
     {
         currentState = GameState.Paused;
         OnGameStateChanged?.Invoke(currentState);
-        Time.timeScale = 0;
     }
 
     public void ResumeGame()
@@ -40,7 +39,6 @@ public class GameManager : MonoBehaviour
         currentState = GameState.Playing;
         SaveProgress();
         OnGameStateChanged?.Invoke(currentState);
-        Time.timeScale = 1;
     }
 
     public void EndStage()

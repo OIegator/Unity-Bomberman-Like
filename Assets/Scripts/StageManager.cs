@@ -38,7 +38,7 @@ public class StageManager : MonoBehaviour
                 enemyFactory.StartFactory();
                 break;
             case GameState.Paused:
-                // Pause game logic
+                enemyFactory.StopFactory();
                 break;
             case GameState.StageComplete:
                 GoToNextStage();
@@ -56,7 +56,6 @@ public class StageManager : MonoBehaviour
                 break;
             case GameState.BackToMenu:
                 StartCoroutine(OnStageComplete());
-                
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(state), state, null);

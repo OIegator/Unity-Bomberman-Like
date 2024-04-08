@@ -18,9 +18,13 @@ public class UIManager : MonoBehaviour
     public GameObject uiStageSelector;
     public GameObject uiGameOverPanel;
     public GameObject uiStageCompletePanel;
+    public GameObject uiPausePanel;
+    public TextMeshProUGUI countdownText;
     public bool gameOverPanelActive;
     public bool stageCompletePanelActive;
     public CanvasGroup uiTransitionScreen;
+    public CanvasGroup uiPauseScreen;
+    public GameObject pauseButton;
     public Button startButton;
     public Bomberman player;
 
@@ -67,21 +71,30 @@ public class UIManager : MonoBehaviour
         switch (state)
         {
             case GameState.Playing:
-                // Resume game logic
+                pauseButton.SetActive(true);
                 break;
             case GameState.Paused:
-                // Pause game logic
+                pauseButton.SetActive(false);
+                uiPauseScreen.alpha = 0.75f;
+                uiPausePanel.SetActive(true);
                 break;
             case GameState.StageComplete:
+                pauseButton.SetActive(false);
                 if (stageCompletePanelActive) HideStageCompleteUIElements();
                 FadeIn();
                 break;
             case GameState.GameOver:
+                pauseButton.SetActive(false);
                 ShowGameOverUIElements();
                 break;
             case GameState.NotStarted:
                 break;
             case GameState.Restart:
+                pauseButton.SetActive(false);
+                uiPausePanel.SetActive(false);
+                countdownText.text = "";
+                uiPauseScreen.alpha = 0f;
+                if (stageCompletePanelActive) HideStageCompleteUIElements();
                 if (gameOverPanelActive) HideGameOverUIElements();
                 FadeIn();
                 break;
@@ -155,6 +168,9 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator DelayedBackToMenu()
     {
+        uiPausePanel.SetActive(false);
+        countdownText.text = "";
+        uiPauseScreen.alpha = 0f;
         GameManager.Instance.menuTransition = true;
         FadeIn(0.5f);
         if (gameOverPanelActive) HideGameOverUIElements();
@@ -162,6 +178,24 @@ public class UIManager : MonoBehaviour
         SwitchCamera();
         ShowPlayUIElements();
         ShowStageSelectorUIElements();
+    }
+
+    public void Unpause()
+    {
+        StartCoroutine(UnpauseCountdown());
+    }
+    private IEnumerator UnpauseCountdown()
+    {
+        uiPausePanel.SetActive(false);
+        for (int i = 3; i > 0; i--)
+        {
+            countdownText.text = i.ToString();
+            yield return new WaitForSeconds(1f);
+        }
+        
+        countdownText.text = "";
+        uiPauseScreen.alpha = 0f;
+        GameManager.Instance.ResumeGame();
     }
 
     private void HidePlayUIElements()
