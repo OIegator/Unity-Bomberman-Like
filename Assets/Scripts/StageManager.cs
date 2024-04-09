@@ -12,6 +12,8 @@ public class StageManager : MonoBehaviour
     [Header("Systems")] [SerializeField] private ObjectPoolManager objectPoolManager;
     [SerializeField] private EnemyFactory enemyFactory;
     [SerializeField] private GameObject player;
+    [SerializeField] private GameObject tutorialCanvas1;
+    [SerializeField] private GameObject tutorialCanvas2;
     [SerializeField] private GridGenerator gridGenerator;
     [SerializeField] private BoxCollider boundingVolume;
 
@@ -55,6 +57,8 @@ public class StageManager : MonoBehaviour
                 StartCoroutine(OnStageComplete());
                 break;
             case GameState.BackToMenu:
+                UIManager.Instance.SelectStage(CurrentStageIndex, CurrentPageIndex);
+                UIManager.Instance.ResetPage(CurrentPageIndex);
                 StartCoroutine(OnStageComplete());
                 break;
             default:
@@ -107,6 +111,24 @@ public class StageManager : MonoBehaviour
 
     private void NextStage()
     {
+        if (CurrentPageIndex == 0 && CurrentStageIndex == 0)
+        {
+            tutorialCanvas1.SetActive(true);
+        }
+        else
+        {
+            tutorialCanvas1.SetActive(false);
+        }
+        
+        if (CurrentPageIndex == 0 && CurrentStageIndex == 1)
+        {
+            tutorialCanvas2.SetActive(true);
+        }
+        else
+        {
+            tutorialCanvas2.SetActive(false);
+        }
+        
         boundingVolume.center = stagePages[CurrentPageIndex].stages[CurrentStageIndex].cameraConfinerCenter;
         boundingVolume.size = stagePages[CurrentPageIndex].stages[CurrentStageIndex].cameraConfinerSize;
         enemyFactory.Setup(player);
@@ -133,6 +155,7 @@ public class StageManager : MonoBehaviour
             StartCoroutine(DestroyStage());
             NextStage();
             SetupPlayer();
+            
         }
         else
         {

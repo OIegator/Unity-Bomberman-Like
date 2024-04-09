@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
     public CanvasGroup uiTransitionScreen;
     public CanvasGroup uiPauseScreen;
     public GameObject pauseButton;
+    public GameObject exitButton;
     public Button startButton;
     public Bomberman player;
 
@@ -71,6 +72,7 @@ public class UIManager : MonoBehaviour
         switch (state)
         {
             case GameState.Playing:
+                exitButton.SetActive(false);
                 pauseButton.SetActive(true);
                 break;
             case GameState.Paused:
@@ -168,6 +170,7 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator DelayedBackToMenu()
     {
+        exitButton.SetActive(true);
         uiPausePanel.SetActive(false);
         countdownText.text = "";
         uiPauseScreen.alpha = 0f;
@@ -232,7 +235,7 @@ public class UIManager : MonoBehaviour
     {
         gameOverPanelActive = false;
         RectTransform uiGameOverPanelRectTransform = uiGameOverPanel.GetComponent<RectTransform>();
-        uiGameOverPanelRectTransform.DOAnchorPosY(-uiGameOverPanelRectTransform.rect.height - 30f, 1f)
+        uiGameOverPanelRectTransform.DOAnchorPosY(-uiGameOverPanelRectTransform.rect.height - 30f, 0.5f)
             .SetEase(Ease.InOutQuint)
             .OnComplete(() => uiGameOverPanel.SetActive(false));
     }
@@ -241,7 +244,7 @@ public class UIManager : MonoBehaviour
     {
         stageCompletePanelActive = false;
         RectTransform uiStageCompletePanelRectTransform = uiStageCompletePanel.GetComponent<RectTransform>();
-        uiStageCompletePanelRectTransform.DOAnchorPosY(-uiStageCompletePanelRectTransform.rect.height - 30f, 1f)
+        uiStageCompletePanelRectTransform.DOAnchorPosY(-uiStageCompletePanelRectTransform.rect.height - 30f, 0.5f)
             .SetEase(Ease.InOutQuint)
             .OnComplete(() => uiGameOverPanel.SetActive(false));
     }
@@ -251,7 +254,7 @@ public class UIManager : MonoBehaviour
         uiGameOverPanel.SetActive(true);
         gameOverPanelActive = true;
         uiGameOverPanel.GetComponent<RectTransform>()
-            .DOAnchorPosY(uiGameOverPanel.GetComponent<RectTransform>().rect.height + 30f, 1f)
+            .DOAnchorPosY(uiGameOverPanel.GetComponent<RectTransform>().rect.height + 30f, 0.5f)
             .SetEase(Ease.InOutElastic);
     }
 
@@ -260,7 +263,7 @@ public class UIManager : MonoBehaviour
         uiStageCompletePanel.SetActive(true);
         stageCompletePanelActive = true;
         uiStageCompletePanel.GetComponent<RectTransform>()
-            .DOAnchorPosY(uiStageCompletePanel.GetComponent<RectTransform>().rect.height + 30f, 1f)
+            .DOAnchorPosY(uiStageCompletePanel.GetComponent<RectTransform>().rect.height + 30f, 0.5f)
             .SetEase(Ease.InOutElastic);
     }
     public void NextPage()
@@ -295,6 +298,12 @@ public class UIManager : MonoBehaviour
     {
         _swipeTween?.Restart();
         _swipeTween = stagePagesRect.DOLocalMove(_targetPagePos, swipeTweenTime).SetEase(swipeTweenType);
+    }
+    
+    public void ResetPage(int page)
+    {
+        _swipeTween?.Restart();
+        _swipeTween = stagePagesRect.DOLocalMove(page * pageStep, 0.1f);
     }
 
     void GenerateStageButtons()
@@ -353,7 +362,7 @@ public class UIManager : MonoBehaviour
         return stageIndex <= GameManager.Instance.unlockedStage;
     }
 
-    void SelectStage(int stageIndex, int pageIndex)
+    public void SelectStage(int stageIndex, int pageIndex)
     {
         // Reset the previously selected button
         if (_selectedButton != null)

@@ -46,7 +46,7 @@ public class GridGenerator : MonoBehaviour
         switch (_stage.blocks[i * _stage.size.y + j].objectAbove)
         {
             case AboveObjectType.Box:
-                var obj = CreateObject(ObjectType.Box, ground.transform, 1);
+                var obj = CreateObject(ObjectType.Box, ground.transform, 0.95f);
                 obj.GetComponent<Box>().node = ground.GetComponent<Node>();
                 ground.GetComponent<Node>().SetState(State.Inaccessible);
                 break;

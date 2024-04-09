@@ -101,6 +101,11 @@ public class GameManager : MonoBehaviour
     {
         return Path.Combine(Application.persistentDataPath, SaveFilePath);
     }
+    
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }
 
 [Serializable]
