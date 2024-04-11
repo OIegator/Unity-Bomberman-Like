@@ -177,6 +177,7 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.menuTransition = true;
         FadeIn(0.5f);
         if (gameOverPanelActive) HideGameOverUIElements();
+        if (stageCompletePanelActive) HideStageCompleteUIElements();
         yield return new WaitForSeconds(0.6f);
         SwitchCamera();
         ShowPlayUIElements();

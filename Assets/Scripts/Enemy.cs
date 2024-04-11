@@ -153,11 +153,13 @@ public class Enemy : MonoBehaviour, IPooledObject
     public void Setup(GameObject player, GameObject spawnPoint)
     {
         currentNode = spawnPoint.GetComponent<Node>();
-        transform.position = spawnPoint.transform.position + Vector3.up * 0.8f;
+        transform.position = spawnPoint.transform.position + Vector3.up * 0.75f;
+        transform.rotation = spawnPoint.transform.rotation;
+        transform.localScale = new Vector3(defaultScale, defaultScale, defaultScale);
         _player = player;
         _findPlayer = false;
-        transform.localScale = new Vector3(defaultScale, defaultScale, defaultScale);
         _isDead = false;
+        _currentPath = null;
         _pathfinder = GetComponent<Pathfinder>();
         _currentNodeIndex = 0;
         _enemyFactory = FindObjectOfType<EnemyFactory>();

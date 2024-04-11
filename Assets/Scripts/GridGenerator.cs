@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GridGenerator : MonoBehaviour
@@ -21,6 +22,7 @@ public class GridGenerator : MonoBehaviour
             for (int j = 0; j < _stage.size.y; j++)
             {
                 var cell = ObjectPoolManager.Instance.GetObject(_stage.blocks[i * _stage.size.y + j].objectType);
+                cell.GetComponent<Node>().SetState(State.Accessible);
                 nodes.Add(cell.GetComponent<Node>());
                 cell.GetComponent<Node>().DeleteNeighbors();
 
@@ -59,8 +61,9 @@ public class GridGenerator : MonoBehaviour
                 ground.GetComponent<Node>().SetState(State.Inaccessible);
                 break;
             case AboveObjectType.EnemySpawner:
-                CreateObject(ObjectType.EnemySpawner, ground.transform, 1f);
+                var spawner = CreateObject(ObjectType.EnemySpawner, ground.transform, 1f);
                 _enemyFactory.AddSpawnPoint(ground.gameObject);
+                _enemyFactory.AddTextMesh(spawner.GetComponent<EnemySpawner>().text);
                 break;
             case AboveObjectType.Exit:
                 CreateObject(ObjectType.Exit, ground.transform, 1f);

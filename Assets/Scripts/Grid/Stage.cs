@@ -10,6 +10,7 @@ public class Stage : ScriptableObject
     public Vector2Int start;
     public Vector3 cameraConfinerCenter;
     public Vector3 cameraConfinerSize;
+    public int maxEnemyCount = 1;
 
     public List<BlockInfo> blocks;
 }
