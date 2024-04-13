@@ -10843,10 +10843,10 @@ MonoBehaviour:
     - {fileID: 11400000, guid: c5fe4cfea3d843746ada51fbedd195a7, type: 2}
     - {fileID: 11400000, guid: b724557180b299347b6c0d98fb5dec7c, type: 2}
     - {fileID: 11400000, guid: a6f607e6a53c584478f6be6d712f98cc, type: 2}
-    - {fileID: 11400000, guid: 1d85cd77f5e00e9499f42033b35b5c29, type: 2}
     - {fileID: 11400000, guid: 0803e210c0e183f4682c76837aaed4dc, type: 2}
-  - stages:
     - {fileID: 11400000, guid: c2a1de8b82654ce429a321d38cce9572, type: 2}
+  - stages:
+    - {fileID: 11400000, guid: 1d85cd77f5e00e9499f42033b35b5c29, type: 2}
 --- !u!1 &1995434497
 GameObject:
   m_ObjectHideFlags: 0
