@@ -35,7 +35,11 @@ public class Bomb : MonoBehaviour, IPooledObject
     {
         if (other.gameObject.CompareTag("Boom"))
         {
-            Blow();
+            var explosion = other.gameObject.GetComponent<Explosion>();
+            if (explosion.delay - explosion.counter < 0.2f)
+            {
+                Blow();
+            }
         }
     }
 

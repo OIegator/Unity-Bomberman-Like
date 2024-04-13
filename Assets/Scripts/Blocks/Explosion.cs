@@ -4,24 +4,24 @@ public class Explosion : MonoBehaviour, IPooledObject
 {
     public ObjectType ObjectType => ObjectType.Explosion;
     public float delay;
-    private float _counter;
+    public float counter;
     [SerializeField] private ParticleSystem _particleSystem;
 
     void Start()
     {
-        _counter = delay;
+        counter = delay;
     }
 
 
     void Update()
     {
-        if (_counter > 0)
+        if (counter > 0)
         {
-            _counter -= Time.deltaTime;
+            counter -= Time.deltaTime;
         }
         else
         {
-            _counter = delay;
+            counter = delay;
             DestroyObject();
         }
     }
@@ -41,7 +41,7 @@ public class Explosion : MonoBehaviour, IPooledObject
 
         if (other.gameObject.CompareTag("Player"))
         {
-            if (delay - _counter < 0.2f)
+            if (delay - counter < 0.2f)
             {
                 other.GetComponent<Bomberman>().Die();
             }
@@ -49,7 +49,7 @@ public class Explosion : MonoBehaviour, IPooledObject
         
         if (other.gameObject.CompareTag("Enemy"))
         {
-            if (delay - _counter < 0.2f)
+            if (delay - counter < 0.2f)
             {
                 other.GetComponent<Enemy>().Die();
             }
