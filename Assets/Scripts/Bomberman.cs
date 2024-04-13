@@ -9,6 +9,7 @@ public class Bomberman : MonoBehaviour
     private bool _isMoving;
     private Vector3 _origPos, _targetPos;
     public float timeToMove = 0.45f;
+    public float timeToInterrupt = 0.15f;
     public float timeToRotate = 0.2f;
     public float jumpHeight = 0.2f;
     public LayerMask wallLayer;
@@ -67,6 +68,9 @@ public class Bomberman : MonoBehaviour
         GameManager.Instance.ResumeGame();
     }
 
+    private bool isChangingDirection = false;
+    private Vector3 newDirection;
+
     void Update()
     {
         if (GameManager.Instance.currentState != GameState.Playing) return;
@@ -80,33 +84,60 @@ public class Bomberman : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
             PlaceBomb();
 
-        if (Input.GetKey(KeyCode.W) && !_isMoving)
-            StartCoroutine(MovePlayer(Vector3.forward));
+        if (!_isMoving) // Check if the player is not currently moving
+        {
+            if (Input.GetKey(KeyCode.W))
+                StartCoroutine(MovePlayer(Vector3.forward));
 
-        if (Input.GetKey(KeyCode.A) && !_isMoving)
-            StartCoroutine(MovePlayer(Vector3.left));
+            else if (Input.GetKey(KeyCode.A))
+                StartCoroutine(MovePlayer(Vector3.left));
 
-        if (Input.GetKey(KeyCode.S) && !_isMoving)
-            StartCoroutine(MovePlayer(Vector3.back));
+            else if (Input.GetKey(KeyCode.S))
+                StartCoroutine(MovePlayer(Vector3.back));
 
-        if (Input.GetKey(KeyCode.D) && !_isMoving)
-            StartCoroutine(MovePlayer(Vector3.right));
+            else if (Input.GetKey(KeyCode.D))
+                StartCoroutine(MovePlayer(Vector3.right));
+        }
+        else // If the player is currently moving, allow changing direction
+        {
+            if (Input.GetKeyDown(KeyCode.W))
+                ChangeDirection(Vector3.forward);
+
+            else if (Input.GetKeyDown(KeyCode.A))
+                ChangeDirection(Vector3.left);
+
+            else if (Input.GetKeyDown(KeyCode.S))
+                ChangeDirection(Vector3.back);
+
+            else if (Input.GetKeyDown(KeyCode.D))
+                ChangeDirection(Vector3.right);
+        }
     }
 
-    private bool IsWallCollision(Vector3 direction)
+    void ChangeDirection(Vector3 newDir)
     {
-        return Physics.Raycast(transform.position + Vector3.up * 0.5f, direction, out var hit, 0.8f, wallLayer);
+        if (!isChangingDirection)
+        {
+            isChangingDirection = true;
+            newDirection = newDir;
+        }
+    }
+
+    private bool IsWallCollision(Vector3 position, Vector3 direction)
+    {
+        return Physics.Raycast(position + Vector3.up * 0.5f, direction, out var hit, 0.8f, wallLayer);
     }
 
     private IEnumerator MovePlayer(Vector3 direction, bool ignoreWall = false)
     {
         _isMoving = true;
+        Node targetNode = currentNode;
         splash.Play();
         float elapsedTime = 0;
 
         _origPos = transform.position;
 
-        if (IsWallCollision(direction) && !ignoreWall)
+        if (IsWallCollision(_origPos, direction) && !ignoreWall)
         {
             _targetPos = _origPos;
         }
@@ -115,7 +146,7 @@ public class Bomberman : MonoBehaviour
             _targetPos = _origPos + direction;
             if (_directionToIndex.TryGetValue(direction, out int index) && !ignoreWall)
             {
-                currentNode = currentNode.GetNeighbors()[index];
+                targetNode = currentNode.GetNeighbors()[index];
             }
         }
 
@@ -128,6 +159,22 @@ public class Bomberman : MonoBehaviour
 
         while (elapsedTime < timeToMove)
         {
+            if (isChangingDirection && elapsedTime < timeToInterrupt && !IsWallCollision(_origPos, newDirection) &&
+                direction != newDirection)
+            {
+                Debug.Log("Interrupt");
+                _targetPos = _origPos + newDirection;
+
+                if (_directionToIndex.TryGetValue(newDirection, out int index))
+                {
+                    targetNode = currentNode.GetNeighbors()[index];
+                }
+
+                targetRotation = Quaternion.LookRotation(newDirection);
+
+                isChangingDirection = false;
+            }
+
             // Smoothly move towards the target position 
             transform.position = Vector3.Lerp(startPos, _targetPos, EaseInOutQuint(elapsedTime / timeToMove));
             transform.rotation =
@@ -150,7 +197,9 @@ public class Bomberman : MonoBehaviour
             yield return null;
         }
 
+        isChangingDirection = false;
         transform.position = _targetPos;
+        currentNode = targetNode;
 
         _isMoving = false;
     }

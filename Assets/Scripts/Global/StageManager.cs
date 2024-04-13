@@ -15,7 +15,6 @@ public class StageManager : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject tutorialCanvas1;
     [SerializeField] private GameObject tutorialCanvas2;
-    [SerializeField] private GameObject tutorialCanvas3;
     [SerializeField] private GridGenerator gridGenerator;
     [SerializeField] private BoxCollider boundingVolume;
 
@@ -129,7 +128,7 @@ public class StageManager : MonoBehaviour
         {
             tutorialCanvas1.SetActive(false);
         }
-        
+
         if (CurrentPageIndex == 0 && CurrentStageIndex == 1)
         {
             tutorialCanvas2.SetActive(true);
@@ -137,15 +136,6 @@ public class StageManager : MonoBehaviour
         else
         {
             tutorialCanvas2.SetActive(false);
-        }
-        
-        if (CurrentPageIndex == 0 && CurrentStageIndex == 2)
-        {
-            tutorialCanvas3.SetActive(true);
-        }
-        else
-        {
-            tutorialCanvas3.SetActive(false);
         }
         
         boundingVolume.center = stagePages[CurrentPageIndex].stages[CurrentStageIndex].cameraConfinerCenter;

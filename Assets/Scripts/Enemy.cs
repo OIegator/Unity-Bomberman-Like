@@ -10,9 +10,9 @@ public class Enemy : MonoBehaviour, IPooledObject
     [SerializeField] private float defaultScale = 0.5f;
     private bool _isMoving;
     private Vector3 _origPos, _targetPos;
-    public float timeToMove = 0.45f;
-    public float timeToRotate = 0.2f;
-    public float jumpHeight = 0.2f;
+    public float timeToMove = 0.47f;
+    public float timeToRotate = 0.18f;
+    public float jumpHeight = 0.18f;
     public LayerMask wallLayer;
     public Node currentNode;
     private EnemyFactory _enemyFactory;
