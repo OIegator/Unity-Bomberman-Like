@@ -73,7 +73,10 @@ public class Bomberman : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
             GameManager.Instance.PauseGame();
-        
+
+        if (Input.GetKeyDown(KeyCode.R))
+            GameManager.Instance.Restart();
+
         if (Input.GetKeyDown(KeyCode.Space))
             PlaceBomb();
 

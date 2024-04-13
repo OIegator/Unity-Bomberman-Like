@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28720f8055ce33544b0fb3a74fecc45c, type: 3}
   m_Name: Stage 4
   m_EditorClassIdentifier: 
-  id: 4
+  id: 6
   size: {x: 14, y: 9}
   start: {x: 1, y: 3}
   cameraConfinerCenter: {x: 7.5, y: 5.552164, z: 0}
   cameraConfinerSize: {x: 13.91475, y: 9.224327, z: 8.3}
+  maxEnemyCount: 2
   blocks:
   - objectType: 0
     objectAbove: 4
@@ -45,9 +46,27 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
+    objectAbove: 1
+  - objectType: 0
     objectAbove: 0
   - objectType: 0
     objectAbove: 0
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 1
+  - objectType: 0
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -77,11 +96,47 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
+    objectAbove: 1
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
     objectAbove: 0
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 1
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
     objectAbove: 0
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 1
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -93,9 +148,7 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 2
   - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 2
+    objectAbove: 0
   - objectType: 0
     objectAbove: 2
   - objectType: 0
@@ -103,80 +156,10 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 1
   - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 1
-  - objectType: 0
     objectAbove: 1
   - objectType: 0
     objectAbove: 2
   - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
     objectAbove: 0
   - objectType: 0
     objectAbove: 2
@@ -185,15 +168,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 0
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -207,33 +184,31 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 2
   - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 1
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 1
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
     objectAbove: 2
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 0
   - objectType: 0
     objectAbove: 2
   - objectType: 0
     objectAbove: 1
-  - objectType: 0
-    objectAbove: 1
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 2
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 0
-  - objectType: 0
-    objectAbove: 2
   - objectType: 0
     objectAbove: 2
   - objectType: 0
@@ -241,11 +216,37 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 3
   - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 3
+  - objectType: 0
     objectAbove: 0
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 1
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 2
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 0
+  - objectType: 0
+    objectAbove: 2
   - objectType: 0
     objectAbove: 5
   - objectType: 0
-    objectAbove: 0
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
