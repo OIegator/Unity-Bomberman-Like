@@ -9,6 +9,7 @@ public class StagePage
 
 public class StageManager : MonoBehaviour
 {
+    public static StageManager Instance { get; private set; }
     [Header("Systems")] [SerializeField] private ObjectPoolManager objectPoolManager;
     [SerializeField] private EnemyFactory enemyFactory;
     [SerializeField] private GameObject player;
@@ -22,10 +23,19 @@ public class StageManager : MonoBehaviour
 
     private const float ClearDelay = 0.1f;
 
-    private int CurrentPageIndex { get; set; }
+    public int CurrentPageIndex { get; set; }
 
-    private int CurrentStageIndex { get; set; }
+    public int CurrentStageIndex { get; set; }
 
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+
+        DontDestroyOnLoad(gameObject);
+    }
     private void Start()
     {
         SetupSystem();
@@ -45,8 +55,6 @@ public class StageManager : MonoBehaviour
                 break;
             case GameState.StageComplete:
                 GoToNextStage();
-                GameManager.Instance.unlockedStage = Mathf.Max(GameManager.Instance.unlockedStage,
-                    stagePages[CurrentPageIndex].stages[CurrentStageIndex].id);
                 StartCoroutine(OnStageComplete());
                 break;
             case GameState.GameOver:

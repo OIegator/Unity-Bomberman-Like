@@ -72,7 +72,7 @@ public class UIManager : MonoBehaviour
         switch (state)
         {
             case GameState.Playing:
-                exitButton.SetActive(false);
+//                exitButton.SetActive(false);
                 pauseButton.SetActive(true);
                 break;
             case GameState.Paused:
@@ -170,7 +170,7 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator DelayedBackToMenu()
     {
-        exitButton.SetActive(true);
+       // exitButton.SetActive(true);
         uiPausePanel.SetActive(false);
         countdownText.text = "";
         uiPauseScreen.alpha = 0f;
@@ -181,6 +181,7 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(0.6f);
         SwitchCamera();
         ShowPlayUIElements();
+        UpdateStageButtons();
         ShowStageSelectorUIElements();
     }
 
@@ -358,6 +359,25 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    void UpdateStageButtons()
+    {
+        int stageIndex = 1;
+        foreach (var pageButtonList in _stageButtons)
+        {
+            foreach (var button in pageButtonList)
+            {
+                button.interactable = CheckIfStageUnlocked(stageIndex);
+                if (button.interactable)
+                {
+                    if (button != _selectedButton) button.image.sprite = defaultSprite;
+                    button.GetComponentInChildren<TextMeshProUGUI>().color = Color.white;
+                }
+
+                stageIndex++;
+            }
+        }
+    }
+
     bool CheckIfStageUnlocked(int stageIndex)
     {
         return stageIndex <= GameManager.Instance.unlockedStage;
@@ -382,7 +402,6 @@ public class UIManager : MonoBehaviour
             TextMeshProUGUI buttonText = _selectedButton.GetComponentInChildren<TextMeshProUGUI>();
             buttonText.color = Color.white;
             buttonText.rectTransform.offsetMin = new Vector2(0f, 0f);
-            ;
         }
 
         // Set the new selected button

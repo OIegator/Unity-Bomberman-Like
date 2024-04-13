@@ -11,8 +11,8 @@ public class GameManager : MonoBehaviour
     public bool menuTransition = true;
 
     public int unlockedStage = 1;
-    
-    private const string SaveFilePath = "game_progress.json";
+
+    private const string UnlockedStageKey = "UnlockedStage";
 
     public event Action<GameState> OnGameStateChanged;
 
@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
-        
+
         LoadProgress();
     }
 
@@ -43,67 +43,68 @@ public class GameManager : MonoBehaviour
 
     public void EndStage()
     {
+        var currentStageId = StageManager.Instance.stagePages[StageManager.Instance.CurrentPageIndex]
+            .stages[StageManager.Instance.CurrentStageIndex].id;
+        if (currentStageId == unlockedStage)
+        {
+            unlockedStage++;
+        }
+        else
+        {
+            unlockedStage = Math.Max(unlockedStage, currentStageId);
+        }
+
         UIManager.Instance.ShowStageCompleteUIElements();
         currentState = GameState.NotStarted;
         OnGameStateChanged?.Invoke(currentState);
     }
-    
+
     public void Restart()
     {
         currentState = GameState.Restart;
         OnGameStateChanged?.Invoke(currentState);
     }
-    
+
     public void BackToMenu()
     {
         currentState = GameState.BackToMenu;
         OnGameStateChanged?.Invoke(currentState);
     }
 
-    
+
     public void GameOver()
     {
         currentState = GameState.GameOver;
         OnGameStateChanged?.Invoke(currentState);
     }
-    
+
     public void StartNextStage()
     {
         currentState = GameState.StageComplete;
         OnGameStateChanged?.Invoke(currentState);
     }
-    
+
     private void SaveProgress()
     {
-        GameProgressData data = new GameProgressData();
-        data.unlockedStage = unlockedStage;
-
-        string jsonData = JsonUtility.ToJson(data);
-        File.WriteAllText(GetSaveFilePath(), jsonData);
+        PlayerPrefs.SetInt(UnlockedStageKey, unlockedStage);
+        PlayerPrefs.Save();
     }
 
     private void LoadProgress()
     {
-        string filePath = GetSaveFilePath();
-        if (File.Exists(filePath))
-        {
-            string jsonData = File.ReadAllText(filePath);
-            GameProgressData data = JsonUtility.FromJson<GameProgressData>(jsonData);
-            unlockedStage = data.unlockedStage;
-        }
-        else
-        {
-            unlockedStage = 1;
-        }
+        unlockedStage = PlayerPrefs.GetInt(UnlockedStageKey, 1);
     }
 
-    private string GetSaveFilePath()
+    public void ResetProgress()
     {
-        return Path.Combine(Application.persistentDataPath, SaveFilePath);
+        PlayerPrefs.DeleteKey(UnlockedStageKey);
+        PlayerPrefs.Save();
+        unlockedStage = 1;
     }
-    
+
     public void ExitGame()
     {
+        PlayerPrefs.Save();
         Application.Quit();
     }
 }
