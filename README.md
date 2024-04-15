@@ -32,7 +32,7 @@ The repository contains an educational project "Bomberman-Like" developed as par
 
 ## Where to play
 
-The game is available to play in the browser via a link on [itch.io](link).
+The game is available to play in the browser via a [link](https://oiegator.itch.io/bomberman-lite?secret=wJGhSj5dIpHqfhA0VY9N14XHGt8).
 
 ## How to play
 
