@@ -6,6 +6,9 @@ using Cinemachine;
 using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEngine.EventSystems;
+using Object = UnityEngine.Object;
 
 public class UIManager : MonoBehaviour
 {
@@ -53,6 +56,10 @@ public class UIManager : MonoBehaviour
 
     private readonly List<List<Button>> _stageButtons = new();
     private Button _selectedButton;
+
+    [SerializeField] private GameObject _stageCompleteFirst;
+    [SerializeField] private GameObject _mainMenuFirst;
+    [SerializeField] private GameObject _gameOverFirst;
 
     private void Awake()
     {
@@ -170,11 +177,13 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator DelayedBackToMenu()
     {
-       // exitButton.SetActive(true);
+        // exitButton.SetActive(true);
+        pauseButton.SetActive(false);
         uiPausePanel.SetActive(false);
         countdownText.text = "";
         uiPauseScreen.alpha = 0f;
         GameManager.Instance.menuTransition = true;
+        ObjectPoolManager.Instance.RebindInvisibleWalls();
         FadeIn(0.5f);
         if (gameOverPanelActive) HideGameOverUIElements();
         if (stageCompletePanelActive) HideStageCompleteUIElements();
@@ -189,6 +198,7 @@ public class UIManager : MonoBehaviour
     {
         StartCoroutine(UnpauseCountdown());
     }
+
     private IEnumerator UnpauseCountdown()
     {
         uiPausePanel.SetActive(false);
@@ -197,7 +207,7 @@ public class UIManager : MonoBehaviour
             countdownText.text = i.ToString();
             yield return new WaitForSeconds(1f);
         }
-        
+
         countdownText.text = "";
         uiPauseScreen.alpha = 0f;
         GameManager.Instance.ResumeGame();
@@ -239,35 +249,66 @@ public class UIManager : MonoBehaviour
         RectTransform uiGameOverPanelRectTransform = uiGameOverPanel.GetComponent<RectTransform>();
         uiGameOverPanelRectTransform.DOAnchorPosY(-uiGameOverPanelRectTransform.rect.height - 30f, 0.5f)
             .SetEase(Ease.InOutQuint)
-            .OnComplete(() => uiGameOverPanel.SetActive(false));
+            .OnComplete(() =>
+            {
+                uiGameOverPanel.SetActive(false);
+
+                foreach (Transform child in uiGameOverPanel.transform)
+                {
+                    child.gameObject.SetActive(false);
+                }
+            });
     }
-    
+
     private void HideStageCompleteUIElements()
     {
         stageCompletePanelActive = false;
         RectTransform uiStageCompletePanelRectTransform = uiStageCompletePanel.GetComponent<RectTransform>();
         uiStageCompletePanelRectTransform.DOAnchorPosY(-uiStageCompletePanelRectTransform.rect.height - 30f, 0.5f)
             .SetEase(Ease.InOutQuint)
-            .OnComplete(() => uiGameOverPanel.SetActive(false));
+            .OnComplete(() =>
+            {
+                uiGameOverPanel.SetActive(false);
+
+                foreach (Transform child in uiStageCompletePanel.transform)
+                {
+                    child.gameObject.SetActive(false);
+                }
+            });
     }
 
     private void ShowGameOverUIElements()
     {
         uiGameOverPanel.SetActive(true);
+        foreach (Transform child in uiGameOverPanel.transform)
+        {
+            child.gameObject.SetActive(true);
+        }
+
         gameOverPanelActive = true;
         uiGameOverPanel.GetComponent<RectTransform>()
             .DOAnchorPosY(uiGameOverPanel.GetComponent<RectTransform>().rect.height + 30f, 0.5f)
-            .SetEase(Ease.InOutElastic);
+            .SetEase(Ease.InOutElastic)
+            .OnComplete(() => { EventSystem.current.SetSelectedGameObject(_gameOverFirst); });
     }
 
     public void ShowStageCompleteUIElements()
     {
         uiStageCompletePanel.SetActive(true);
+        foreach (Transform child in uiStageCompletePanel.transform)
+        {
+            child.gameObject.SetActive(true);
+        }
+
         stageCompletePanelActive = true;
         uiStageCompletePanel.GetComponent<RectTransform>()
             .DOAnchorPosY(uiStageCompletePanel.GetComponent<RectTransform>().rect.height + 30f, 0.5f)
-            .SetEase(Ease.InOutElastic);
+            .SetEase(Ease.InOutElastic).OnComplete(() =>
+            {
+                EventSystem.current.SetSelectedGameObject(_stageCompleteFirst);
+            });
     }
+
     public void NextPage()
     {
         if (_currentPage < maxPage)
@@ -301,7 +342,7 @@ public class UIManager : MonoBehaviour
         _swipeTween?.Restart();
         _swipeTween = stagePagesRect.DOLocalMove(_targetPagePos, swipeTweenTime).SetEase(swipeTweenType);
     }
-    
+
     public void ResetPage(int page)
     {
         _swipeTween?.Restart();

@@ -35,6 +35,7 @@ public class StageManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
     }
+
     private void Start()
     {
         SetupSystem();
@@ -53,8 +54,17 @@ public class StageManager : MonoBehaviour
                 enemyFactory.StopFactory();
                 break;
             case GameState.StageComplete:
-                GoToNextStage();
-                StartCoroutine(OnStageComplete());
+                if (CurrentStageIndex >= stagePages[CurrentPageIndex].stages.Length - 1 &&
+                    CurrentPageIndex >= stagePages.Length - 1)
+                {
+                    GameManager.Instance.BackToMenu();
+                }
+                else
+                {
+                    GoToNextStage();
+                    StartCoroutine(OnStageComplete());
+                }
+
                 break;
             case GameState.GameOver:
                 enemyFactory.StopFactory();
@@ -81,11 +91,6 @@ public class StageManager : MonoBehaviour
         {
             CurrentStageIndex = 0;
             CurrentPageIndex++;
-            if (CurrentPageIndex >= stagePages.Length)
-            {
-                CurrentPageIndex--;
-                GameManager.Instance.BackToMenu();
-            }
         }
     }
 
@@ -98,11 +103,14 @@ public class StageManager : MonoBehaviour
     private System.Collections.IEnumerator OnStageComplete()
     {
         yield return new WaitForSeconds(0.6f);
+        ObjectPoolManager.Instance.RebindInvisibleWalls();
+        ObjectPoolManager.Instance.InvisibleWallsVisibility(false);
         StartCoroutine(DestroyStage());
         NextStage();
         SetupPlayer();
         if (GameManager.Instance.currentState != GameState.BackToMenu)
         {
+            ObjectPoolManager.Instance.InvisibleWallsVisibility();
             GameManager.Instance.ResumeGame();
         }
         else
@@ -137,7 +145,7 @@ public class StageManager : MonoBehaviour
         {
             tutorialCanvas2.SetActive(false);
         }
-        
+
         boundingVolume.center = stagePages[CurrentPageIndex].stages[CurrentStageIndex].cameraConfinerCenter;
         boundingVolume.size = stagePages[CurrentPageIndex].stages[CurrentStageIndex].cameraConfinerSize;
         enemyFactory.Setup(player, stagePages[CurrentPageIndex].stages[CurrentStageIndex].maxEnemyCount);
@@ -164,7 +172,6 @@ public class StageManager : MonoBehaviour
             StartCoroutine(DestroyStage());
             NextStage();
             SetupPlayer();
-            
         }
         else
         {

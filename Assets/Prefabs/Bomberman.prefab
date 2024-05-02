@@ -431,13 +431,13 @@ ParticleSystem:
         m_RotationOrder: 4
     startColor:
       serializedVersion: 2
-      minMaxState: 1
+      minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 0.63529414, g: 0.8470589, b: 0.24705884, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.4901961, g: 0.7294118, b: 0.45098042, a: 1}
-        key1: {r: 0.6862745, g: 0.98823535, b: 0.5803922, a: 1}
+        key0: {r: 0.79215693, g: 0.9960785, b: 0.427451, a: 1}
+        key1: {r: 0.75294125, g: 0.9960785, b: 0.37254903, a: 1}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
@@ -5350,9 +5350,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bomb: {fileID: 8254555471696295569, guid: bdb3051e92b920140b566b2d77ccbc75, type: 3}
   splash: {fileID: 4898736707940990389}
-  timeToMove: 0.45
-  timeToRotate: 0.2
-  jumpHeight: 0.2
+  timeToMove: 0.37
+  timeToInterrupt: 0.1
+  timeToRotate: 0.18
+  jumpHeight: 0.18
   wallLayer:
     serializedVersion: 2
     m_Bits: 1408

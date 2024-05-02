@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28720f8055ce33544b0fb3a74fecc45c, type: 3}
   m_Name: Stage 4
   m_EditorClassIdentifier: 
-  id: 6
+  id: 4
   size: {x: 14, y: 9}
   start: {x: 1, y: 3}
-  cameraConfinerCenter: {x: 7.5, y: 5.552164, z: 0}
-  cameraConfinerSize: {x: 13.91475, y: 9.224327, z: 8.3}
+  cameraConfinerCenter: {x: 6.5, y: 5, z: -0.46}
+  cameraConfinerSize: {x: 14, y: 10, z: 7.8}
   maxEnemyCount: 2
   blocks:
   - objectType: 0

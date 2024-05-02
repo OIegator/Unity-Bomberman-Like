@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ObjectPoolManager : MonoBehaviour
@@ -48,6 +49,7 @@ public class ObjectPoolManager : MonoBehaviour
         {
             obj = InstantiateObject(objectType, _pool[objectType].Container);
         }
+
         obj.SetActive(true);
         _activeObjects.Add(obj);
         return obj;
@@ -77,6 +79,41 @@ public class ObjectPoolManager : MonoBehaviour
         obj.SetActive(false);
         return obj;
     }
+
+    public void SetWallUpInvisibleWalls(string boolName = "WallUp")
+    {
+        var invisibleWalls = FindObjectsOfType<InvisibleWall>();
+
+        foreach (var obj in invisibleWalls)
+        {
+            if (obj.GetComponent<IPooledObject>().ObjectType != ObjectType.InvisibleWall) continue;
+            var animator = obj.GetComponent<Animator>();
+            if (animator == null) continue;
+            animator.SetBool(boolName, true);
+        }
+    }
+    
+    public void InvisibleWallsVisibility(bool flag = true)
+    {
+        var invisibleWalls = FindObjectsOfType<InvisibleWall>();
+
+        foreach (var obj in invisibleWalls)
+        {
+            obj.visual.SetActive(flag);
+        }
+    }
+    public void RebindInvisibleWalls()
+    {
+        var invisibleWalls = FindObjectsOfType<InvisibleWall>();
+
+        foreach (var obj in invisibleWalls)
+        {
+            if (obj.GetComponent<IPooledObject>().ObjectType != ObjectType.InvisibleWall) continue;
+            var animator = obj.GetComponent<Animator>();
+            if (animator == null) continue;
+            animator.Rebind();
+        }
+    }
 }
 
 [Serializable]
@@ -99,4 +136,3 @@ public enum ObjectType
     Explosion,
     Exit
 }
-

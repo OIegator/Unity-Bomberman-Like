@@ -15,8 +15,8 @@ MonoBehaviour:
   id: 1
   size: {x: 15, y: 8}
   start: {x: 1, y: 3}
-  cameraConfinerCenter: {x: 6.492679, y: 5.552164, z: -1.1}
-  cameraConfinerSize: {x: 13.91475, y: 9.224327, z: 6}
+  cameraConfinerCenter: {x: 7, y: 5, z: -0.83}
+  cameraConfinerSize: {x: 15, y: 10, z: 6.7}
   maxEnemyCount: 1
   blocks:
   - objectType: 0
@@ -36,7 +36,7 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 4
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -50,9 +50,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -66,9 +66,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -82,9 +82,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -98,9 +98,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -114,9 +114,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -130,9 +130,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -146,9 +146,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -162,9 +162,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -178,9 +178,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -194,9 +194,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -210,9 +210,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -226,9 +226,9 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 0
   - objectType: 0
@@ -242,11 +242,11 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 0
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
     objectAbove: 2
   - objectType: 0
@@ -254,8 +254,8 @@ MonoBehaviour:
   - objectType: 0
     objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2
   - objectType: 0
-    objectAbove: 4
+    objectAbove: 2

@@ -61,9 +61,10 @@ public class Bomberman : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             StartCoroutine(MovePlayer(Vector3.right, true));
+            if(i == 1) ObjectPoolManager.Instance.SetWallUpInvisibleWalls();
             yield return new WaitForSeconds(0.5f);
         }
-
+        
         GameManager.Instance.menuTransition = false;
         GameManager.Instance.ResumeGame();
     }
@@ -73,6 +74,12 @@ public class Bomberman : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.currentState == GameState.Paused)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+                UIManager.Instance.Unpause();
+        }
+        
         if (GameManager.Instance.currentState != GameState.Playing) return;
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -162,7 +169,6 @@ public class Bomberman : MonoBehaviour
             if (isChangingDirection && elapsedTime < timeToInterrupt && !IsWallCollision(_origPos, newDirection) &&
                 direction != newDirection)
             {
-                Debug.Log("Interrupt");
                 _targetPos = _origPos + newDirection;
 
                 if (_directionToIndex.TryGetValue(newDirection, out int index))
