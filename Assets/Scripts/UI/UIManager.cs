@@ -29,6 +29,7 @@ public class UIManager : MonoBehaviour
     public CanvasGroup uiPauseScreen;
     public GameObject pauseButton;
     public GameObject exitButton;
+    public GameObject mobileControls;
     public Button startButton;
     public Bomberman player;
 
@@ -81,25 +82,30 @@ public class UIManager : MonoBehaviour
             case GameState.Playing:
 //                exitButton.SetActive(false);
                 pauseButton.SetActive(true);
+                mobileControls.SetActive(Application.isMobilePlatform);
                 break;
             case GameState.Paused:
                 pauseButton.SetActive(false);
+                mobileControls.SetActive(false);
                 uiPauseScreen.alpha = 0.75f;
                 uiPausePanel.SetActive(true);
                 break;
             case GameState.StageComplete:
                 pauseButton.SetActive(false);
+                mobileControls.SetActive(false);
                 if (stageCompletePanelActive) HideStageCompleteUIElements();
                 FadeIn();
                 break;
             case GameState.GameOver:
                 pauseButton.SetActive(false);
+                mobileControls.SetActive(false);
                 ShowGameOverUIElements();
                 break;
             case GameState.NotStarted:
                 break;
             case GameState.Restart:
                 pauseButton.SetActive(false);
+                mobileControls.SetActive(false);
                 uiPausePanel.SetActive(false);
                 countdownText.text = "";
                 uiPauseScreen.alpha = 0f;

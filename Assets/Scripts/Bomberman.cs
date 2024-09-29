@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Bomberman : MonoBehaviour
 {
     public GameObject bomb;
     public ParticleSystem splash;
+    public PlayerInput playerInput;
+    private Controls _controls;
     private bool _isMoving;
     private Vector3 _origPos, _targetPos;
     public float timeToMove = 0.45f;
@@ -23,6 +26,12 @@ public class Bomberman : MonoBehaviour
         {Vector3.back, 1},
         {Vector3.right, 2}
     };
+
+    private void Awake()
+    {
+        _controls = new Controls();
+        _controls.Player.Enable();
+    }
 
     private void Start()
     {
@@ -61,10 +70,10 @@ public class Bomberman : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             StartCoroutine(MovePlayer(Vector3.right, true));
-            if(i == 1) ObjectPoolManager.Instance.SetWallUpInvisibleWalls();
+            if (i == 1) ObjectPoolManager.Instance.SetWallUpInvisibleWalls();
             yield return new WaitForSeconds(0.5f);
         }
-        
+
         GameManager.Instance.menuTransition = false;
         GameManager.Instance.ResumeGame();
     }
@@ -72,52 +81,40 @@ public class Bomberman : MonoBehaviour
     private bool isChangingDirection = false;
     private Vector3 newDirection;
 
-    void Update()
+    void FixedUpdate()
     {
         if (GameManager.Instance.currentState == GameState.Paused)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
                 UIManager.Instance.Unpause();
         }
-        
+
         if (GameManager.Instance.currentState != GameState.Playing) return;
 
         if (Input.GetKeyDown(KeyCode.Escape))
             GameManager.Instance.PauseGame();
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (playerInput.actions["Restart"].WasPressedThisFrame())
             GameManager.Instance.Restart();
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            PlaceBomb();
+        
 
         if (!_isMoving) // Check if the player is not currently moving
         {
-            if (Input.GetKey(KeyCode.W))
-                StartCoroutine(MovePlayer(Vector3.forward));
-
-            else if (Input.GetKey(KeyCode.A))
-                StartCoroutine(MovePlayer(Vector3.left));
-
-            else if (Input.GetKey(KeyCode.S))
-                StartCoroutine(MovePlayer(Vector3.back));
-
-            else if (Input.GetKey(KeyCode.D))
-                StartCoroutine(MovePlayer(Vector3.right));
+            Vector3 inputVector = _controls.Player.Movement.ReadValue<Vector3>();
+            if (inputVector == Vector3.right || inputVector == Vector3.left ||
+                inputVector == Vector3.forward || inputVector == Vector3.back)
+            {
+                StartCoroutine(MovePlayer(inputVector));
+            }
         }
         else // If the player is currently moving, allow changing direction
         {
-            if (Input.GetKeyDown(KeyCode.W))
-                ChangeDirection(Vector3.forward);
-
-            else if (Input.GetKeyDown(KeyCode.A))
-                ChangeDirection(Vector3.left);
-
-            else if (Input.GetKeyDown(KeyCode.S))
-                ChangeDirection(Vector3.back);
-
-            else if (Input.GetKeyDown(KeyCode.D))
-                ChangeDirection(Vector3.right);
+            Vector3 inputVector = _controls.Player.Movement.ReadValue<Vector3>();
+            if (inputVector == Vector3.right || inputVector == Vector3.left ||
+                inputVector == Vector3.forward || inputVector == Vector3.back)
+            {
+                ChangeDirection(inputVector);
+            }
         }
     }
 
@@ -226,8 +223,11 @@ public class Bomberman : MonoBehaviour
         };
     }
 
-    private void PlaceBomb()
+    public void PlaceBomb(InputAction.CallbackContext context)
     {
+        if (!context.performed) return;
+        if (GameManager.Instance.currentState != GameState.Playing) return;
+
         if (bomb != null)
         {
             Vector3 bombPosition = transform.position;

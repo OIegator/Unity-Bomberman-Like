@@ -14,6 +14,7 @@ public class StageManager : MonoBehaviour
     [SerializeField] private EnemyFactory enemyFactory;
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject tutorialCanvas1;
+    [SerializeField] private GameObject tutorialControls;
     [SerializeField] private GameObject tutorialCanvas2;
     [SerializeField] private GridGenerator gridGenerator;
     [SerializeField] private BoxCollider boundingVolume;
@@ -131,6 +132,7 @@ public class StageManager : MonoBehaviour
         if (CurrentPageIndex == 0 && CurrentStageIndex == 0)
         {
             tutorialCanvas1.SetActive(true);
+            tutorialControls.SetActive(!Application.isMobilePlatform);
         }
         else
         {
